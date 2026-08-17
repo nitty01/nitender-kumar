@@ -1,0 +1,54 @@
+---
+config:
+  flowchart:
+    nodeSpacing: 28
+    rankSpacing: 36
+    diagramPadding: 8
+  layout: dagre
+---
+flowchart LR
+    %% ---------------------- Data Sources ----------------------
+    A[🗄️ SQL Sources<br/>End User Systems] --> B[🔄 Data Sync<br/>ETL Pipeline]
+    
+    %% ---------------------- Data Processing ----------------------
+    B --> C[📊 Data Profiler<br/>Data Analysis & Quality Check]
+    
+    %% ---------------------- Analytical Engine ----------------------
+    C --> D[🧠 NEC-LABS Analytical Engine<br/>Refactored & Integrated]
+    
+    %% ---------------------- Feature Generation ----------------------
+    D --> E[⚙️ Feature Generator<br/>Automated Feature Creation]
+    
+    %% ---------------------- Web Application ----------------------
+    E --> F[🌐 Web Application<br/>Feature Selection Interface]
+    
+    %% ---------------------- Users ----------------------
+    G[👨‍💻 Data Scientists] --> F
+    
+    %% ---------------------- Output ----------------------
+    F --> H[🤖 ML Models<br/>Trained with Selected Features]
+    
+    %% ---------------------- Infrastructure ----------------------
+    I[🐳 Docker + AWS] --> B
+    J[🗄️ PostgreSQL + Redis] --> C
+    
+    %% ---------------------- Styles ----------------------
+    classDef sources fill:#BBDEFB,stroke:#1565C0,stroke-width:2px,color:#0D1B2A;
+    classDef sync fill:#B2DFDB,stroke:#00695C,stroke-width:2px,color:#00332E;
+    classDef profiler fill:#D1C4E9,stroke:#4527A0,stroke-width:2px,color:#1A093F;
+    classDef engine fill:#FFE0B2,stroke:#EF6C00,stroke-width:2px,color:#4A2500;
+    classDef features fill:#C8E6C9,stroke:#2E7D32,stroke-width:2px,color:#0B2E13;
+    classDef webapp fill:#F8BBD0,stroke:#AD1457,stroke-width:2px,color:#4A0E2E;
+    classDef users fill:#E1BEE7,stroke:#6A1B9A,stroke-width:2px,color:#2D0A3A;
+    classDef output fill:#FFF9C4,stroke:#F57F17,stroke-width:2px,color:#E65100;
+    classDef infra fill:#ECEFF1,stroke:#37474F,stroke-width:2px,color:#263238;
+    
+    class A sources
+    class B sync
+    class C profiler
+    class D engine
+    class E features
+    class F webapp
+    class G users
+    class H output
+    class I,J infra

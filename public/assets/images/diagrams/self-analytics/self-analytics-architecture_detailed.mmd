@@ -1,0 +1,109 @@
+---
+config:
+  flowchart:
+    nodeSpacing: 28
+    rankSpacing: 36
+    diagramPadding: 8
+  layout: dagre
+---
+flowchart TD
+     subgraph SOURCES["🗄️ SQL Data Sources"]
+            A["End User System 1<br>SQL Server"]
+            B["End User System 2<br>MySQL"]
+            C["End User System 3<br>PostgreSQL"]
+            D["End User System N<br>Various SQL DBs"]
+      end
+     subgraph SYNC["🔄 Data Synchronization"]
+            E["ETL Pipeline"]
+            F["Data Extraction"]
+            G["Data Transformation"]
+            H["Data Loading"]
+            I["Sync Scheduler"]
+      end
+     subgraph PROFILER["📊 Data Profiler"]
+            J["Data Quality Analysis"]
+            K["Statistical Profiling"]
+            L["Pattern Detection"]
+            M["Data Validation"]
+            N["Schema Analysis"]
+      end
+     subgraph STORAGE["💾 Data Storage"]
+            O[("PostgreSQL - Profiled Data")]
+            P[("Redis - Cache")]
+            Q[("File Storage - Raw Data")]
+            R[("Metadata Store")]
+      end
+     subgraph ENGINE["🧠 NEC-LABS Analytical Engine"]
+            S["Data Preprocessing"]
+            T["Feature Engineering Algorithms"]
+            U["Statistical Analysis"]
+            V["Pattern Recognition"]
+            W["Feature Validation"]
+      end
+     subgraph FEATURES["⚙️ Feature Generation"]
+            X["Automated Feature Creation"]
+            Y["Feature Ranking & Scoring"]
+            Z["Feature Correlation Analysis"]
+            AA["Feature Selection Algorithms"]
+      end
+     subgraph WEB["🌐 Web Application"]
+            BB["Django Web Framework"]
+            CC["User Authentication"]
+            DD["Data Profiler Dashboard"]
+            EE["Feature Selection Interface"]
+            FF["Model Building Interface"]
+      end
+     subgraph USERS["👨‍💻 Data Scientists"]
+            GG["Data Scientists"]
+            HH["ML Engineers"]
+            II["Analytics Team"]
+      end
+     subgraph INFRA["⚙️ Infrastructure"]
+            JJ["Docker Containers"]
+            KK["AWS Cloud Services"]
+            LL["Load Balancer"]
+            MM["Monitoring & Logging"]
+      end
+    SOURCES --> SYNC
+    SYNC --> PROFILER
+    PROFILER --> STORAGE
+    STORAGE --> ENGINE
+    ENGINE --> FEATURES
+    FEATURES --> WEB
+    WEB --> USERS
+    INFRA --> SYNC
+    INFRA --> PROFILER
+    INFRA --> WEB
+
+    %% Apply styling to subgraphs
+    SOURCES:::sources
+    SYNC:::sync
+    PROFILER:::profiler
+    STORAGE:::storage
+    ENGINE:::engine
+    FEATURES:::features
+    WEB:::web
+    USERS:::users
+    INFRA:::infra
+
+    %% Class assignments for individual nodes (if needed)
+    class A,B,C,D sources
+    class E,F,G,H,I sync
+    class J,K,L,M,N profiler
+    class O,P,Q,R storage
+    class S,T,U,V,W engine
+    class X,Y,Z,AA features
+    class BB,CC,DD,EE,FF web
+    class GG,HH,II users
+    class JJ,KK,LL,MM infra
+
+    %% ---------------------- Styles ----------------------
+    classDef sources fill:#E3F2FD,stroke:#1565C0,stroke-width:2px,color:#0D47A1
+    classDef sync fill:#E8F5E9,stroke:#2E7D32,stroke-width:2px,color:#1B5E20
+    classDef profiler fill:#FFF3E0,stroke:#EF6C00,stroke-width:2px,color:#E65100
+    classDef storage fill:#F3E5F5,stroke:#6A1B9A,stroke-width:2px,color:#4A148C
+    classDef engine fill:#E0F2F1,stroke:#00695C,stroke-width:2px,color:#004D40
+    classDef features fill:#FFEBEE,stroke:#C62828,stroke-width:2px,color:#B71C1C
+    classDef web fill:#FFF8E1,stroke:#F57F17,stroke-width:2px,color:#4E342E
+    classDef users fill:#ECEFF1,stroke:#37474F,stroke-width:2px,color:#263238
+    classDef infra fill:#F1F8E9,stroke:#558B2F,stroke-width:2px,color:#33691E

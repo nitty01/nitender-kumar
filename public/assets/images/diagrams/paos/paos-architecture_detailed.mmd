@@ -1,0 +1,66 @@
+---
+config:
+  flowchart:
+    nodeSpacing: 28
+    rankSpacing: 36
+    diagramPadding: 8
+  layout: dagre
+---
+flowchart TD
+ subgraph USERS["👥 User Layer"]
+        A["Retail Managers"]
+        B["Inventory Teams"]
+  end
+ subgraph API["🌐 Access Layer"]
+        C["Web Portal <br> Django"]
+  end
+ subgraph SERVICES["⚙️ Data Services"]
+        D["Data Ingestion <br> Sales &amp; Inventory Feeds"]
+  end
+ subgraph PROCESSING["🔄 Processing & ML"]
+        E["Data Processing Engine <br> Spark + Hadoop Pipelines"]
+        F["ML Recommendation Engine <br> Demand Forecast &amp; Auto-Order"]
+  end
+ subgraph STORAGE["💾 Data Layer"]
+        G[("SQL Database")]
+        H[("Hadoop Cluster")]
+  end
+ subgraph OUTPUT["📊 Outputs"]
+        I["Recommendation Reports <br> Optimal Inventory Levels"]
+        J["Auto-Order Triggers <br> Inventory System"]
+        K["Analytics Dashboard <br> Sales &amp; Demand Trends"]
+  end
+ subgraph INFRA["⚙️ Infrastructure"]
+        L["Docker Containers"]
+        M["Hybrid Cloud / On-Prem"]
+        N["CI/CD Pipeline"]
+  end
+    USERS --> API
+    API --> SERVICES
+    SERVICES --> PROCESSING
+    PROCESSING --> STORAGE & OUTPUT
+    STORAGE --> PROCESSING
+    INFRA --> SERVICES & PROCESSING & STORAGE
+     USERS:::users
+     API:::api
+     SERVICES:::services
+     PROCESSING:::processing
+     STORAGE:::storage
+     OUTPUT:::output
+     INFRA:::infra
+    classDef users fill:#E3F2FD,stroke:#1565C0,stroke-width:2px,color:#0D47A1
+    classDef api fill:#E8F5E9,stroke:#2E7D32,stroke-width:2px,color:#1B5E20
+    classDef services fill:#FFF3E0,stroke:#EF6C00,stroke-width:2px,color:#E65100
+    classDef processing fill:#F3E5F5,stroke:#6A1B9A,stroke-width:2px,color:#4A148C
+    classDef storage fill:#E0F2F1,stroke:#00695C,stroke-width:2px,color:#004D40
+    classDef output fill:#EDE7F6,stroke:#4527A0,stroke-width:2px,color:#311B92
+    classDef infra fill:#F1F8E9,stroke:#558B2F,stroke-width:2px,color:#33691E
+
+class A,B users;
+class C api;
+class D services;
+class E,F processing;
+class G,H storage;
+class I,J,K output;
+class L,M,N infra;
+

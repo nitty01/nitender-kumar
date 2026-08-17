@@ -1,0 +1,59 @@
+---
+config:
+  flowchart:
+    nodeSpacing: 28
+    rankSpacing: 36
+    diagramPadding: 8
+  layout: dagre
+---
+flowchart LR
+subgraph USERS["👥 Architects"]
+    ARCH["Solution Architects"]
+end
+subgraph EXPERIENCE["🖥️ Studio Experience - Azure"]
+    direction TB
+    CHAT["AI Copilot Chat<br/>guided conversation"]
+    CANVAS["Diagram Canvas<br/>live Mermaid edit"]
+    STAGES["Design Stage Navigator<br/>req · diagram · cloud · cost · compare"]
+end
+subgraph EDGE["🚪 Edge"]
+    direction TB
+    AFD["Azure Front Door"]
+    APIM["API Management"]
+    ENTRA["Microsoft Entra ID"]
+    SIG["Azure SignalR<br/>canvas and stage sync"]
+end
+subgraph PIPELINE["📐 AI Design Pipeline - LangGraph"]
+    direction TB
+    S1["① Requirements"]
+    S2["② Diagram"]
+    S3["③ Cloud Map"]
+    S4["④ Cost Model"]
+    S5["⑤ Compare"]
+    S1 --> S2 --> S3 --> S4 --> S5
+end
+subgraph PLATFORM["🔧 Runtime & State"]
+    direction TB
+    T_REQ["Azure Functions<br/>req · mermaid · map · cost · compare"]
+    COSMOS["Cosmos DB"]
+    BLOB["Blob Storage"]
+    AOAI["Azure OpenAI"]
+    SB["Service Bus DLQ"]
+end
+ARCH --> CHAT
+ARCH --> CANVAS
+ARCH --> STAGES
+CHAT --> AFD
+CANVAS --> AFD
+STAGES --> AFD
+AFD --> APIM
+APIM --> ENTRA
+APIM --> SIG
+APIM --> PIPELINE
+PIPELINE --> T_REQ
+PIPELINE --> AOAI
+PIPELINE --> COSMOS
+PIPELINE --> BLOB
+SIG --> COSMOS
+PIPELINE --> SB
+SB --> PIPELINE

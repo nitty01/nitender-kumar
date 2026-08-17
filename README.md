@@ -1,36 +1,61 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Nitender Kumar
 
-## Getting Started
+Personal site for **Nitender Kumar** — engineering leader for platform, data, and AI. Targeting Head of Platform Engineering, Director of Engineering, or Head of AI/Data Platform.
 
-First, run the development server:
+## Local
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3001](http://localhost:3001) (or 3000 if that port is free).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Admin
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Private control plane at `/admin` (login at `/admin/login`).
 
-## Learn More
+No default username/password is shipped in the app.
 
-To learn more about Next.js, take a look at the following resources:
+The first admin account is created only through recovery for the configured `ADMIN_EMAIL`. The
+stored email is **AES-encrypted** and the password is **scrypt-hashed** in `admin_accounts`.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+**Forgot password:**
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. Open `/admin/recover`
+2. Enter your admin email → receive a one-time code (15 min TTL, limited attempts)
+3. Enter code + new password (12–128 characters) → signed in; previous sessions are revoked
 
-## Deploy on Vercel
+Configure mail in env vars:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **Resend:** `RESEND_API_KEY` (+ optional `ADMIN_EMAIL_FROM`)
+- **or SMTP:** `SMTP_HOST` / `SMTP_PORT` / `SMTP_USER` / `SMTP_PASS` (Gmail app password works)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Admin auth and admin writes require:
+
+- `ADMIN_EMAIL`
+- `ADMIN_SESSION_SECRET`
+- `SUPABASE_SERVICE_ROLE_KEY`
+
+Public reads still use the publishable/anon Supabase key. Apply `supabase/schema.sql` then
+`supabase/schema-admin.sql`.
+
+The public site does not change itself. Visitors cannot switch theme, layout mode, or live
+pages. Those are published from `/admin` (Public website). Live notes are only posts marked
+published and not archived.
+
+## Media (Cloudinary)
+
+Notes can embed images, video, and PDFs from Cloudinary. In the admin editor, **Upload media**
+sends the file with a signed server upload into the app-managed folder
+`nitender-kumar-portfolio/site-media`.
+
+Add to `.env.local` (Dashboard → API Keys):
+
+```bash
+CLOUDINARY_CLOUD_NAME=
+CLOUDINARY_API_KEY=
+CLOUDINARY_API_SECRET=
+```
+
+Then restart `npm run dev`. Public pages rewrite Cloudinary URLs with `f_auto,q_auto` delivery.

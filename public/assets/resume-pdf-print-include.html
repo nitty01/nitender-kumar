@@ -1,0 +1,122 @@
+<style>
+/*
+  NITENDER_KUMAR_DL_V5_2025 PDF — Chrome headless --print-to-pdf (100% scale; no shrink in CSS).
+  A4, 0.7in margins; line-height 1.15; body/bullets >= 10.5pt. No transform: scale().
+*/
+@page {
+  size: A4;
+  margin: 0.7in;
+}
+html {
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+body {
+  font-family: "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.15;
+  color: #111;
+  max-width: 100%;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+header#title-block-header {
+  margin-bottom: 10px;
+}
+h1.title {
+  font-size: 18pt;
+  font-weight: 700;
+  margin: 0 0 4px 0;
+  line-height: 1.15;
+}
+p.subtitle {
+  font-size: 10.5pt;
+  font-weight: 600;
+  margin: 4px 0 0 0;
+  line-height: 1.15;
+}
+#title-block-header + p {
+  font-size: 10.5pt;
+  margin: 6px 0 10px 0;
+  line-height: 1.15;
+}
+/* Section headers (##) — 13pt bold */
+h2 {
+  font-size: 13pt;
+  font-weight: 700;
+  margin: 10px 0 6px 0;
+  padding-bottom: 2px;
+  border-bottom: 1px solid #bbb;
+  line-height: 1.15;
+  page-break-after: avoid;
+}
+/* Role titles (###) — 12pt bold */
+h3 {
+  font-size: 12pt;
+  font-weight: 700;
+  margin: 10px 0 4px 0;
+  line-height: 1.15;
+  page-break-after: avoid;
+}
+/* Project names (####) — 11.5pt bold */
+h4 {
+  font-size: 11.5pt;
+  font-weight: 700;
+  font-style: normal;
+  margin: 8px 0 4px 0;
+  line-height: 1.15;
+  page-break-after: avoid;
+}
+p {
+  margin: 4px 0 6px 0;
+  line-height: 1.15;
+  font-size: 10.5pt;
+}
+ul {
+  margin: 4px 0 8px 1.15em;
+  padding: 0;
+}
+li {
+  margin: 0 0 5px 0;
+  font-size: 10.5pt;
+  line-height: 1.15;
+  max-width: 100%;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+li p {
+  margin: 0;
+  display: inline;
+  font-size: 10.5pt;
+}
+/* Compact scan: Core Competencies + Leadership in two columns */
+h2#core-competencies + ul,
+h2#leadership-highlights + ul {
+  column-count: 2;
+  column-gap: 16px;
+  margin-bottom: 10px;
+}
+hr {
+  border: none;
+  border-top: 1px solid #ddd;
+  margin: 8px 0;
+}
+a {
+  color: #0b57d0;
+  text-decoration: none;
+}
+strong {
+  font-weight: 600;
+}
+/* Optional: explicit break from Markdown <div class="page-break"> */
+.page-break {
+  page-break-after: always;
+  break-after: page;
+  height: 0;
+  margin: 0;
+  padding: 0;
+  border: none;
+  overflow: hidden;
+  visibility: hidden;
+}
+</style>

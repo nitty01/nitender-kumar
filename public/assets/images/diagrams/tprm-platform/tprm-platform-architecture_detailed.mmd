@@ -1,0 +1,49 @@
+---
+config:
+  flowchart:
+    nodeSpacing: 28
+    rankSpacing: 36
+    diagramPadding: 8
+  layout: dagre
+---
+flowchart TB
+subgraph EXT["🌐 External Systems"]
+    SN["🧑‍💼 ServiceNow"]
+end
+subgraph ENTRY["🚪 Entry Layer"]
+    APIGW["🌍 API Gateway"]
+end
+subgraph MSG["📨 Messaging Layer"]
+    SB["📬 Azure Service Bus"]
+end
+subgraph AI["🤖 AI Platform"]
+    direction LR
+    ORCH["🎯 Request Orchestration"]
+    AR["🧠 Agent Runtime"]
+    DI["📄 Document Intelligence"]
+end
+subgraph DATA["💾 Data Layer"]
+    direction LR
+    COSMOS["🗄️ Cosmos DB"]
+    BLOB["📦 Blob Storage"]
+end
+subgraph OBS["📊 Observability"]
+    APPINS["📈 App Insights"]
+end
+subgraph SEC["🔐 Security"]
+    KV["🔑 Key Vault"]
+    AUTH["🛡️ RBAC"]
+end
+SN --> APIGW --> SB --> ORCH --> AR --> DI
+ORCH --> SB
+AR --> SB
+DI --> SB
+AR --> COSMOS
+DI --> BLOB
+ORCH -.-> APPINS
+AR -.-> APPINS
+DI -.-> APPINS
+KV -.-> AR
+AUTH -.-> ORCH
+ORCH --> SB
+SB --> SN

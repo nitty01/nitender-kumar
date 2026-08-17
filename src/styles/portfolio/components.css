@@ -1,0 +1,309 @@
+/**
+ * COMPONENT STYLES
+ * ================
+ * Reusable component styles including cards, buttons, forms, etc.
+ */
+
+/* Glass Morphism Effect */
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+  color: var(--text-light);
+}
+
+body.light .glass {
+  color: var(--text-dark);
+}
+
+/* Theme-aware overrides for hardcoded TailwindCSS classes */
+[data-theme="sunrise"] body,
+[data-theme="sunrise"] .text-gray-200,
+[data-theme="sunrise"] .text-gray-300,
+[data-theme="sunrise"] .text-gray-400 {
+  color: var(--text-dark) !important;
+}
+
+[data-theme="sunrise"] .bg-gray-900,
+[data-theme="sunrise"] .bg-gray-800,
+[data-theme="sunrise"] .bg-gray-900\/95 {
+  background-color: var(--bg-light) !important;
+}
+
+[data-theme="sunrise"] .border-gray-800,
+[data-theme="sunrise"] .border-gray-800\/50,
+[data-theme="sunrise"] .border-gray-700 {
+  border-color: var(--glass-border) !important;
+}
+
+[data-theme="sunrise"] nav {
+  background-color: var(--bg-light) !important;
+  border-color: var(--glass-border) !important;
+}
+
+/* Ensure text colors adapt to theme */
+[data-theme="sunrise"] .text-white:not(.text-on-accent) {
+  color: var(--text-dark) !important;
+}
+
+[data-theme="sunrise"] .text-gray-300 {
+  color: var(--text-dark) !important;
+}
+
+[data-theme="sunrise"] .text-gray-400 {
+  color: var(--text-muted) !important;
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.shadow-glass {
+  box-shadow: var(--shadow-glass);
+}
+
+/* Gradient Text */
+.gradient-text {
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Testimonial Cards */
+.testimonial-card {
+  transition: all var(--transition-base);
+}
+
+.testimonial-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-xl);
+}
+
+/* Marquee Component */
+.marquee { 
+  overflow-x: hidden; 
+}
+
+.marquee.paused { 
+  overflow-x: auto; 
+  cursor: ew-resize; 
+}
+
+.marquee-track {
+  display: flex;
+  gap: 2rem;
+  width: max-content;
+}
+
+.marquee:hover .marquee-track { 
+  animation-play-state: paused; 
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track { 
+    animation: none; 
+  }
+}
+
+/* Testimonial Text Clamping */
+.testimonial-text { 
+  display: -webkit-box; 
+  -webkit-line-clamp: 3; 
+  -webkit-box-orient: vertical; 
+  overflow: hidden; 
+}
+
+.marquee .testimonial-card:hover .testimonial-text, 
+.testimonial-card.expanded .testimonial-text { 
+  -webkit-line-clamp: unset; 
+  -webkit-box-orient: unset; 
+  overflow: visible; 
+}
+
+/* Contact Cards */
+.contact-card {
+  transition: all var(--transition-base);
+}
+
+.contact-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(6, 182, 212, 0.2);
+  border-color: rgba(6, 182, 212, 0.4);
+}
+
+.contact-card:hover .contact-icon {
+  transform: scale(1.1) rotate(5deg);
+}
+
+/* Form Inputs */
+.form-input { 
+  transition: all 0.2s ease; 
+}
+
+.form-input:focus { 
+  transform: translateY(-1px); 
+  box-shadow: 0 8px 25px rgba(6, 182, 212, 0.25); 
+}
+
+.form-input-group {
+  position: relative;
+}
+
+.form-input-group i {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgba(6, 182, 212, 0.6);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.form-input-group .textarea-icon {
+  top: 0.75rem;
+  transform: none;
+}
+
+.form-input-group input,
+.form-input-group textarea {
+  padding-left: 2.75rem;
+}
+
+/* Message Display */
+.message { 
+  display: none !important; 
+}
+
+.message.show { 
+  display: flex !important; 
+}
+
+/* Industry Cards */
+.industry-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.industry-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transition: left 0.5s;
+}
+
+.industry-card:hover::before {
+  left: 100%;
+}
+
+.industry-card .icon-container {
+  position: relative;
+  z-index: 1;
+}
+
+.industry-card:hover .icon-container {
+  transform: scale(1.1) rotate(5deg);
+}
+
+.industry-card .tag {
+  transition: all var(--transition-base);
+}
+
+.industry-card:hover .tag {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+/* Section Separators */
+.section-separator {
+  position: relative;
+  margin: 4rem 0;
+}
+
+.section-separator::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+}
+
+/* Contact Grid Layout */
+.contact-grid { 
+  display: grid; 
+  grid-template-columns: 1fr; 
+  gap: 2rem; 
+}
+
+@media (min-width: 1024px) { 
+  .contact-grid { 
+    grid-template-columns: 1fr 1fr; 
+    gap: 3rem; 
+    align-items: start; 
+  } 
+}
+
+.contact-col { 
+  min-width: 0; 
+}
+
+/* Loading States */
+.loading {
+  position: relative;
+  overflow: hidden;
+}
+
+.loading::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+  animation: loading 1.5s infinite;
+}
+
+/* Skeleton Loading */
+.skeleton {
+  background: linear-gradient(90deg, rgba(255,255,255,0.1) 25%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0.1) 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s ease-in-out infinite;
+}
+
+/* Profile Picture Blink Animation */
+.profile-pic-blink {
+  box-sizing: border-box;
+  width: 12rem;
+  height: 12rem;
+  animation: blinkBorder 2s infinite;
+}
+
+/* Animated Background Elements */
+.animated-bg-element {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.1;
+}
+
+/* Animated Background Gradient */
+.animated-bg {
+  background: linear-gradient(-45deg, #0f172a, #1e293b, #0f172a, #1e1b4b);
+  background-size: 400% 400%;
+  animation: gradientShift 15s ease infinite;
+}
+
+/* Pulse Glow Effect */
+.pulse-glow {
+  animation: pulse-glow 3s ease-in-out infinite;
+}
+

@@ -1,0 +1,265 @@
+/**
+ * MULTI-THEME DEFINITIONS
+ * =======================
+ * This file contains multiple theme presets with meaningful names.
+ * Each theme is defined with its own CSS variables.
+ * 
+ * Themes are designed with proper contrast ratios for accessibility.
+ * Text and icon colors are optimized for readability.
+ */
+
+/* Ink (Default) — navy, paper, champagne */
+:root,
+[data-theme="ocean"] {
+  --accent: #c6ae84;
+  --accent-rgb: 198, 174, 132;
+  --accent2: #d9cfc0;
+  --accent2-rgb: 217, 207, 192;
+
+  --bg-dark: #0c0e12;
+  --bg-light: #f4f0e8;
+  --bg-dark-secondary: #15181f;
+
+  --text-light: #ece8e1;
+  --text-dark: #1c1915;
+  --text-muted: #9a948a;
+  --text-on-accent: #12141a;
+
+  --icon-color: #d9cfc0;
+  --icon-hover: #c6ae84;
+
+  --glass-bg: rgba(236, 232, 225, 0.04);
+  --glass-border: rgba(236, 232, 225, 0.1);
+  --glass-blur: 16px;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.28);
+  --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.32);
+  --shadow-xl: 0 24px 48px rgba(0, 0, 0, 0.36);
+  --shadow-glass: none;
+}
+
+/* Paper — light editorial */
+[data-theme="sunrise"] {
+  --accent: #6f5634;
+  --accent-rgb: 111, 86, 52;
+  --accent2: #5c5346;
+  --accent2-rgb: 92, 83, 70;
+
+  --bg-dark: #f4f0e8;
+  --bg-light: #ebe6db;
+  --bg-dark-secondary: #e8e2d6;
+
+  --text-light: #1c1915;
+  --text-dark: #1c1915;
+  --text-muted: #5c564c;
+  --text-on-accent: #f4f0e8;
+
+  --icon-color: #3d3933;
+  --icon-hover: #6f5634;
+
+  --glass-bg: rgba(28, 25, 21, 0.04);
+  --glass-border: rgba(28, 25, 21, 0.12);
+  --glass-blur: 16px;
+
+  --shadow-sm: 0 1px 2px rgba(28, 25, 21, 0.06);
+  --shadow-md: 0 8px 24px rgba(28, 25, 21, 0.08);
+  --shadow-lg: 0 16px 40px rgba(28, 25, 21, 0.1);
+  --shadow-xl: 0 24px 48px rgba(28, 25, 21, 0.12);
+  --shadow-glass: none;
+}
+
+/* Midnight Blue Theme */
+[data-theme="midnight"] {
+  /* Primary Accent Colors */
+  --accent: #3b82f6;       /* Blue */
+  --accent2: #2563eb;      /* Darker Blue */
+  
+  /* Background Colors */
+  --bg-dark: #0c1220;      /* Dark blue background */
+  --bg-light: #1e3a8a;     /* Medium blue */
+  --bg-dark-secondary: #1e293b;
+  
+  /* Text Colors - High contrast */
+  --text-light: #e0e7ff;   /* Light blue text - WCAG AAA */
+  --text-dark: #0f172a;
+  --text-muted: #a5b4fc;   /* Muted light blue */
+  --text-on-accent: #ffffff;
+  
+  /* Icon Colors */
+  --icon-color: #c7d2fe;   /* Light blue icons */
+  --icon-hover: #3b82f6;   /* Accent on hover */
+  
+  /* Glass Morphism */
+  --glass-bg: rgba(59, 130, 246, 0.1);
+  --glass-border: rgba(59, 130, 246, 0.2);
+  --glass-blur: 10px;
+  
+  /* Shadows */
+  --shadow-sm: 0 2px 4px rgba(37, 99, 235, 0.2);
+  --shadow-md: 0 4px 6px rgba(37, 99, 235, 0.2);
+  --shadow-lg: 0 10px 15px rgba(37, 99, 235, 0.3);
+  --shadow-xl: 0 20px 25px rgba(37, 99, 235, 0.3);
+  --shadow-glass: 0 8px 32px 0 rgba(37, 99, 235, 0.2);
+}
+
+/* Royal Purple Theme */
+[data-theme="royal"] {
+  /* Primary Accent Colors */
+  --accent: #a855f7;       /* Purple */
+  --accent2: #9333ea;      /* Darker Purple */
+  
+  /* Background Colors */
+  --bg-dark: #1a0b2e;      /* Dark purple background */
+  --bg-light: #3b1f5e;     /* Medium purple */
+  --bg-dark-secondary: #2d1b3d;
+  
+  /* Text Colors - High contrast */
+  --text-light: #f3e8ff;   /* Light purple text - WCAG AAA */
+  --text-dark: #1e293b;
+  --text-muted: #d8b4fe;   /* Muted light purple */
+  --text-on-accent: #ffffff;
+  
+  /* Icon Colors */
+  --icon-color: #e9d5ff;   /* Light purple icons */
+  --icon-hover: #a855f7;   /* Accent on hover */
+  
+  /* Glass Morphism */
+  --glass-bg: rgba(168, 85, 247, 0.1);
+  --glass-border: rgba(168, 85, 247, 0.2);
+  --glass-blur: 10px;
+  
+  /* Shadows */
+  --shadow-sm: 0 2px 4px rgba(147, 51, 234, 0.2);
+  --shadow-md: 0 4px 6px rgba(147, 51, 234, 0.2);
+  --shadow-lg: 0 10px 15px rgba(147, 51, 234, 0.3);
+  --shadow-xl: 0 20px 25px rgba(147, 51, 234, 0.3);
+  --shadow-glass: 0 8px 32px 0 rgba(147, 51, 234, 0.2);
+}
+
+/* Forest Green Theme */
+[data-theme="forest"] {
+  /* Primary Accent Colors */
+  --accent: #10b981;       /* Green */
+  --accent2: #059669;      /* Darker Green */
+  
+  /* Background Colors */
+  --bg-dark: #0a1f1a;      /* Dark green background */
+  --bg-light: #064e3b;     /* Medium green */
+  --bg-dark-secondary: #1e293b;
+  
+  /* Text Colors - High contrast */
+  --text-light: #d1fae5;   /* Light green text - WCAG AAA */
+  --text-dark: #0f172a;
+  --text-muted: #6ee7b7;   /* Muted light green */
+  --text-on-accent: #ffffff;
+  
+  /* Icon Colors */
+  --icon-color: #a7f3d0;  /* Light green icons */
+  --icon-hover: #10b981;   /* Accent on hover */
+  
+  /* Glass Morphism */
+  --glass-bg: rgba(16, 185, 129, 0.1);
+  --glass-border: rgba(16, 185, 129, 0.2);
+  --glass-blur: 10px;
+  
+  /* Shadows */
+  --shadow-sm: 0 2px 4px rgba(5, 150, 105, 0.2);
+  --shadow-md: 0 4px 6px rgba(5, 150, 105, 0.2);
+  --shadow-lg: 0 10px 15px rgba(5, 150, 105, 0.3);
+  --shadow-xl: 0 20px 25px rgba(5, 150, 105, 0.3);
+  --shadow-glass: 0 8px 32px 0 rgba(5, 150, 105, 0.2);
+}
+
+/* Sunset Theme */
+[data-theme="sunset"] {
+  /* Primary Accent Colors */
+  --accent: #f97316;       /* Orange */
+  --accent2: #ea580c;      /* Darker Orange */
+  
+  /* Background Colors */
+  --bg-dark: #1c0f07;      /* Dark orange background */
+  --bg-light: #7c2d12;     /* Medium orange */
+  --bg-dark-secondary: #2d1b0f;
+  
+  /* Text Colors - High contrast */
+  --text-light: #ffedd5;   /* Light orange text - WCAG AAA */
+  --text-dark: #1e293b;
+  --text-muted: #fed7aa;   /* Muted light orange */
+  --text-on-accent: #ffffff;
+  
+  /* Icon Colors */
+  --icon-color: #ffedd5;   /* Light orange icons */
+  --icon-hover: #f97316;   /* Accent on hover */
+  
+  /* Glass Morphism */
+  --glass-bg: rgba(249, 115, 22, 0.1);
+  --glass-border: rgba(249, 115, 22, 0.2);
+  --glass-blur: 10px;
+  
+  /* Shadows */
+  --shadow-sm: 0 2px 4px rgba(234, 88, 12, 0.2);
+  --shadow-md: 0 4px 6px rgba(234, 88, 12, 0.2);
+  --shadow-lg: 0 10px 15px rgba(234, 88, 12, 0.3);
+  --shadow-xl: 0 20px 25px rgba(234, 88, 12, 0.3);
+  --shadow-glass: 0 8px 32px 0 rgba(234, 88, 12, 0.2);
+}
+
+/* Blossom Theme */
+[data-theme="blossom"] {
+  /* Primary Accent Colors */
+  --accent: #ec4899;       /* Pink */
+  --accent2: #db2777;      /* Darker Pink */
+  
+  /* Background Colors */
+  --bg-dark: #1a0b14;      /* Dark pink background */
+  --bg-light: #831843;     /* Medium pink */
+  --bg-dark-secondary: #2d1b25;
+  
+  /* Text Colors - High contrast */
+  --text-light: #fce7f3;   /* Light pink text - WCAG AAA */
+  --text-dark: #1e293b;
+  --text-muted: #f9a8d4;   /* Muted light pink */
+  --text-on-accent: #ffffff;
+  
+  /* Icon Colors */
+  --icon-color: #fbcfe8;  /* Light pink icons */
+  --icon-hover: #ec4899;   /* Accent on hover */
+  
+  /* Glass Morphism */
+  --glass-bg: rgba(236, 72, 153, 0.1);
+  --glass-border: rgba(236, 72, 153, 0.2);
+  --glass-blur: 10px;
+  
+  /* Shadows */
+  --shadow-sm: 0 2px 4px rgba(219, 39, 119, 0.2);
+  --shadow-md: 0 4px 6px rgba(219, 39, 119, 0.2);
+  --shadow-lg: 0 10px 15px rgba(219, 39, 119, 0.3);
+  --shadow-xl: 0 20px 25px rgba(219, 39, 119, 0.3);
+  --shadow-glass: 0 8px 32px 0 rgba(219, 39, 119, 0.2);
+}
+
+/* Theme Transition */
+* {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Ensure text uses theme colors */
+body {
+  color: var(--text-light);
+  background-color: var(--bg-dark);
+}
+
+/* Icon color inheritance */
+i, .icon, [class*="icon"] {
+  color: var(--icon-color);
+}
+
+/* Links use accent colors */
+a {
+  color: var(--accent);
+}
+
+a:hover {
+  color: var(--accent2);
+}

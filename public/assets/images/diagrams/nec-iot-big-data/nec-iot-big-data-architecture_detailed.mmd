@@ -1,0 +1,112 @@
+---
+config:
+  flowchart:
+    nodeSpacing: 28
+    rankSpacing: 36
+    diagramPadding: 8
+  layout: dagre
+---
+flowchart TD
+ subgraph IOT["🌐 IoT Devices"]
+        A["Smart Sensors"]
+        B["Edge Computing"]
+        C["Gateway Devices"]
+        D["Mobile Devices"]
+  end
+ subgraph EDGE["⚡ Edge Processing"]
+        E["Data Preprocessing"]
+        F["Local Analytics"]
+        G["Filtering & Aggregation"]
+        H["Protocol Translation"]
+  end
+ subgraph INGEST["📥 Data Ingestion"]
+        I["Apache Kafka"]
+        J["MQTT Broker"]
+        K["REST APIs"]
+        L["Message Queues"]
+  end
+ subgraph STREAM["🌊 Stream Processing"]
+        M["Apache Spark Streaming"]
+        N["Apache Flink"]
+        O["Real-time Analytics"]
+        P["Event Processing"]
+  end
+ subgraph BATCH["📊 Batch Processing"]
+        Q["Apache Spark"]
+        R["Hadoop MapReduce"]
+        S["Data Pipelines"]
+        T["ETL Processes"]
+  end
+ subgraph STORAGE["💾 Data Storage"]
+        U[("HDFS - Raw Data")]
+        V[("HBase - NoSQL")]
+        W[("PostgreSQL - Metadata")]
+        X[("MongoDB - Archives")]
+        Y[("Time Series DB")]
+  end
+ subgraph ML["🤖 Machine Learning"]
+        Z["Feature Engineering"]
+        AA["Model Training"]
+        BB["Predictive Analytics"]
+        CC["Anomaly Detection"]
+        DD["Pattern Recognition"]
+  end
+ subgraph VIZ["📈 Visualization"]
+        EE["Grafana Dashboards"]
+        FF["Custom Analytics UI"]
+        GG["Real-time Monitoring"]
+        HH["Historical Reports"]
+  end
+ subgraph API["🌐 API Layer"]
+        II["REST API Gateway"]
+        JJ["GraphQL"]
+        KK["WebSocket"]
+        LL["Authentication"]
+  end
+ subgraph INFRA["⚙️ Infrastructure"]
+        MM["Kubernetes Cluster"]
+        NN["Docker Containers"]
+        OO["NEC MMS Platform"]
+        PP["Monitoring Stack"]
+  end
+    IOT --> EDGE
+    EDGE --> INGEST
+    INGEST --> STREAM & BATCH
+    STREAM --> STORAGE
+    BATCH --> STORAGE
+    STORAGE --> ML & API
+    ML --> VIZ
+    API --> VIZ
+    INFRA --> STREAM & BATCH & STORAGE
+     IOT:::iot
+     EDGE:::edge
+     INGEST:::ingest
+     STREAM:::stream
+     BATCH:::batch
+     STORAGE:::storage
+     ML:::ml
+     VIZ:::viz
+     API:::api
+     INFRA:::infra
+    classDef iot fill:#E3F2FD,stroke:#1565C0,stroke-width:2px,color:#0D47A1
+    classDef edge fill:#E8F5E9,stroke:#2E7D32,stroke-width:2px,color:#1B5E20
+    classDef ingest fill:#FFF3E0,stroke:#EF6C00,stroke-width:2px,color:#E65100
+    classDef stream fill:#F3E5F5,stroke:#6A1B9A,stroke-width:2px,color:#4A148C
+    classDef batch fill:#E0F2F1,stroke:#00695C,stroke-width:2px,color:#004D40
+    classDef storage fill:#FFEBEE,stroke:#C62828,stroke-width:2px,color:#B71C1C
+    classDef ml fill:#FFF8E1,stroke:#F57F17,stroke-width:2px,color:#4E342E
+    classDef viz fill:#ECEFF1,stroke:#37474F,stroke-width:2px,color:#263238
+    classDef api fill:#F1F8E9,stroke:#558B2F,stroke-width:2px,color:#33691E
+    classDef infra fill:#FCE4EC,stroke:#AD1457,stroke-width:2px,color:#880E4F
+
+class A,B,C,D iot;
+class E,F,G,H edge;
+class I,J,K,L ingest;
+class M,N,O,P stream;
+class Q,R,S,T batch;
+class U,V,W,X,Y storage;
+class Z,AA,BB,CC,DD ml;
+class EE,FF,GG,HH viz;
+class II,JJ,KK,LL api;
+class MM,NN,OO,PP infra;
+

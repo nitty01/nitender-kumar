@@ -1,0 +1,117 @@
+/**
+ * BASE STYLES
+ * ===========
+ * Base HTML, body, and fundamental element styles.
+ * Includes scrollbar, typography, and page-level settings.
+ */
+
+/* Smooth Scrolling */
+html { 
+  scroll-behavior: smooth; 
+}
+
+/* Page Scaling */
+html {
+  zoom: 1;
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+}
+
+body {
+  zoom: 1;
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+}
+
+/* Theme Transitions */
+body {
+  background: var(--bg-dark);
+  color: var(--text-light);
+  transition: background var(--transition-base), color var(--transition-base);
+}
+
+body.light {
+  background: var(--bg-light);
+  color: var(--text-dark);
+}
+
+body.dark {
+  background: var(--bg-dark);
+  color: var(--text-light);
+}
+
+/* Ensure text uses theme colors for proper contrast */
+body {
+  color: var(--text-light);
+}
+
+body.light {
+  color: var(--text-dark);
+}
+
+/* Icon colors use theme variables */
+i, .icon, [class*="icon"], svg {
+  color: var(--icon-color);
+  transition: color var(--transition-base);
+}
+
+i:hover, .icon:hover, [class*="icon"]:hover {
+  color: var(--icon-hover);
+}
+
+/* Links use accent colors */
+a {
+  color: var(--accent);
+  transition: color var(--transition-base);
+}
+
+a:hover {
+  color: var(--accent2);
+}
+
+/* Text color utilities */
+.text-light {
+  color: var(--text-light) !important;
+}
+
+.text-dark {
+  color: var(--text-dark) !important;
+}
+
+.text-muted {
+  color: var(--text-muted) !important;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, var(--accent), var(--accent2));
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(to bottom, var(--accent2), var(--accent));
+}
+
+/* Accessibility Improvements */
+.focus-visible:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+

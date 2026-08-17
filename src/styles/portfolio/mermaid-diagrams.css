@@ -1,0 +1,257 @@
+/**
+ * Shared Mermaid / diagram chrome for project pages.
+ * Pairs with ../js/mermaid-project-config.js (themeVariables + themeCSS).
+ */
+
+.mermaid {
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  min-height: auto;
+  width: 100%;
+  overflow: visible;
+}
+
+.mermaid svg {
+  display: block;
+  margin: 0 auto;
+  height: auto;
+  max-width: 100%;
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* Subgraphs / clusters - visible frame, no pure-black fill */
+.mermaid .cluster rect {
+  fill: rgba(30, 41, 59, 0.55) !important;
+  stroke-width: 1px !important;
+  stroke: rgba(148, 163, 184, 0.45) !important;
+}
+
+.mermaid .cluster text {
+  fill: #e2e8f0 !important;
+}
+
+/* Default node shapes - slate fills (theme may still set per-node classDef) */
+.mermaid .node rect,
+.mermaid .node circle,
+.mermaid .node ellipse,
+.mermaid .node polygon {
+  stroke-width: 1px !important;
+  stroke: rgba(148, 163, 184, 0.55) !important;
+}
+
+/* Edge label text - keep readable without overriding classDef on nodes */
+.mermaid .edgeLabel text {
+  fill: #e2e8f0 !important;
+}
+
+/* Edge label chips */
+.mermaid .edgeLabel rect {
+  fill: rgba(51, 65, 85, 0.92) !important;
+  stroke: rgba(148, 163, 184, 0.35) !important;
+}
+
+.mermaid .labelBkg {
+  fill: rgba(51, 65, 85, 0.92) !important;
+}
+
+.diagram-container {
+  position: relative;
+  background: #eef2f6;
+  background-image: radial-gradient(rgba(28, 25, 21, 0.08) 0.8px, transparent 0.8px);
+  background-size: 18px 18px;
+  backdrop-filter: none;
+  border: 1px solid rgba(28, 25, 21, 0.12);
+  border-radius: 12px;
+  padding: 0;
+  margin: 20px 0;
+  min-height: 16rem;
+  height: auto;
+  overflow: hidden;
+  display: block;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.4);
+}
+
+.diagram-canvas {
+  cursor: grab;
+  touch-action: none;
+}
+
+.diagram-canvas:not(.is-fullscreen)::after {
+  content: "Drag to pan · Scroll to zoom · Expand for fullscreen";
+  position: absolute;
+  left: 12px;
+  bottom: 10px;
+  font-size: 0.75rem;
+  letter-spacing: 0.02em;
+  color: #64748b;
+  pointer-events: none;
+}
+
+.diagram-canvas__stage {
+  display: inline-block;
+  will-change: transform;
+}
+
+.diagram-canvas.is-fullscreen {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 400;
+  width: 100vw !important;
+  height: 100vh !important;
+  min-height: 100vh;
+  margin: 0;
+  border-radius: 0;
+  background: #eef2f6;
+  background-image: radial-gradient(rgba(28, 25, 21, 0.08) 0.8px, transparent 0.8px);
+  background-size: 18px 18px;
+}
+
+.diagram-canvas__close {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  z-index: 5;
+  background: #1c1915;
+  color: #f4f0e8;
+  border: 0;
+  border-radius: 4px;
+  padding: 8px 14px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  letter-spacing: 0.04em;
+}
+
+.diagram-canvas__close:hover {
+  background: #3d3933;
+}
+
+body.diagram-canvas-open .site-nav {
+  visibility: hidden;
+}
+
+.diagram-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  min-height: 16rem;
+  color: #334155;
+}
+
+.diagram-controls {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  gap: 8px;
+  z-index: 10;
+}
+
+.diagram-control-btn {
+  background: #1c1915;
+  color: #f4f0e8;
+  border: 1px solid rgba(28, 25, 21, 0.2);
+  border-radius: 4px;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.diagram-control-btn:hover,
+.diagram-control-btn:focus-visible {
+  background: #3d3933;
+  transform: none;
+}
+
+.diagram-canvas .mermaid,
+.diagram-canvas .mermaid svg {
+  background: transparent !important;
+}
+
+.diagram-canvas .mermaid .cluster rect {
+  fill: #ffffff !important;
+  stroke: #64748b !important;
+  stroke-width: 1.25px !important;
+}
+
+.diagram-canvas .mermaid .cluster text,
+.diagram-canvas .mermaid .nodeLabel,
+.diagram-canvas .mermaid .label,
+.diagram-canvas .mermaid text {
+  fill: #0f172a !important;
+  color: #0f172a !important;
+}
+
+.diagram-canvas .mermaid .node rect,
+.diagram-canvas .mermaid .node circle,
+.diagram-canvas .mermaid .node ellipse,
+.diagram-canvas .mermaid .node polygon {
+  fill: #ffffff !important;
+  stroke: #334155 !important;
+  stroke-width: 1.25px !important;
+}
+
+.diagram-canvas .mermaid .edgePath .path,
+.diagram-canvas .mermaid .flowchart-link {
+  stroke: #334155 !important;
+  stroke-width: 1.4px !important;
+}
+
+.diagram-canvas .mermaid .arrowheadPath {
+  fill: #334155 !important;
+  stroke: #334155 !important;
+}
+
+.diagram-canvas .mermaid .edgeLabel rect,
+.diagram-canvas .mermaid .labelBkg {
+  fill: #ffffff !important;
+  stroke: #94a3b8 !important;
+}
+
+.diagram-canvas .mermaid foreignObject,
+.diagram-canvas .mermaid foreignObject div,
+.diagram-canvas .mermaid foreignObject span {
+  color: #0f172a !important;
+}
+
+.diagram-zoom {
+  transform-origin: 0 0;
+  display: inline-block;
+}
+
+.diagram-toggle {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+  justify-content: center;
+}
+
+.toggle-btn {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.toggle-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.toggle-btn.active {
+  background: linear-gradient(135deg, var(--accent, #06b6d4), var(--accent2, #6366f1));
+  border-color: var(--accent, #06b6d4);
+  box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3);
+}

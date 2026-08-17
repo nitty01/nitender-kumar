@@ -1,0 +1,98 @@
+---
+config:
+  flowchart:
+    nodeSpacing: 28
+    rankSpacing: 36
+    diagramPadding: 8
+  layout: dagre
+---
+flowchart TB
+subgraph CLIENT["🖥️ Studio Workspace"]
+    CHATUI["Copilot Chat<br/>thread per engagement"]
+    CANVAS["Diagram Canvas<br/>real-time Mermaid user edits"]
+    STAGEUI["Stage Stepper<br/>approve before next stage"]
+    CHATUI --> CANVAS
+    STAGEUI --> CHATUI
+end
+subgraph REALTIME["⚡ Real-Time Plane"]
+    SIG["Azure SignalR<br/>canvas ops stage status"]
+    APIM["API Management"]
+    ENTRA["Entra ID RBAC"]
+end
+subgraph ORCH["🔄 LangGraph Container Apps"]
+    direction TB
+    G_START["session_start"]
+    G1["stage_requirements<br/>AI Q&A NFRs scope"]
+    G2["stage_diagram<br/>cloud-agnostic Mermaid"]
+    G3["stage_cloud_map<br/>component to cloud services"]
+    G4["stage_cost<br/>monthly yearly breakdown"]
+    G5["stage_compare<br/>Azure AWS GCP matrix"]
+    G_PUBLISH["publish_blueprint"]
+    G_START --> G1 --> G2 --> G3 --> G4 --> G5 --> G_PUBLISH
+    G2 -.->|canvas edit loop| G2
+    G3 -.->|re-map after edit| G3
+end
+subgraph GATE["💰 FinOps Gate"]
+    EST["Cost Gate Function"]
+    CHOICE{"within budget?"}
+    BLOCK["BLOCK override"]
+end
+subgraph TOOLS["⚙️ Functions by Stage"]
+    F1["requirements.synthesize"]
+    F2["diagram.generate_mermaid"]
+    F3["cloud.map_components"]
+    F4["cost.estimate_periods"]
+    F5["cloud.compare_matrix"]
+    F_RAG["rag.patterns ADR lint"]
+end
+subgraph ARTIFACTS["🗄️ Persistence"]
+    COSMOS["Cosmos DB checkpoints ledger"]
+    BLOB_MER["Blob mermaid source"]
+    BLOB_MAP["Blob cloud mappings"]
+    BLOB_COST["Blob cost estimates"]
+    BLOB_CMP["Blob compare reports"]
+end
+subgraph MODEL["🧠 Model Gateway"]
+    GW["Gateway Function"]
+    AOAI["Azure OpenAI"]
+    SEARCH["Azure AI Search"]
+end
+subgraph PLATFORM["☁️ Platform"]
+    DUR["Durable Functions shell"]
+    SB["Service Bus resume"]
+    KV["Key Vault"]
+    AI["Application Insights"]
+    ACM["Cost Management"]
+end
+CHATUI --> APIM
+CANVAS --> APIM
+STAGEUI --> APIM
+CANVAS <--> SIG
+APIM --> ENTRA
+APIM --> DUR
+DUR --> ORCH
+G1 --> EST
+EST --> CHOICE
+CHOICE -->|no| BLOCK
+CHOICE -->|yes| G1
+G1 --> F1
+F1 --> GW
+GW --> AOAI
+G2 --> F2
+G2 --> F_RAG
+CANVAS --> BLOB_MER
+G2 --> BLOB_MER
+G3 --> F3
+F3 --> BLOB_MAP
+G4 --> F4
+F4 --> SEARCH
+G4 --> BLOB_COST
+G5 --> F5
+F5 --> BLOB_CMP
+F4 --> ACM
+ORCH --> COSMOS
+GW --> KV
+ORCH -->|timeout| SB
+SB --> ORCH
+SIG --> COSMOS
+ORCH -.-> AI

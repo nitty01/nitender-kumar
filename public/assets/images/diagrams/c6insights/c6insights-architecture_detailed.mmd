@@ -1,0 +1,58 @@
+---
+config:
+  flowchart:
+    nodeSpacing: 28
+    rankSpacing: 36
+    diagramPadding: 8
+  layout: dagre
+---
+flowchart TB
+ subgraph DS["📥 Data Sources"]
+        A["Vehicle Telemetry"]
+        B["External APIs<br>Fuel, AQI"]
+        C["Manual & EV Data"]
+  end
+ subgraph ING["⚡ Ingestion Layer"]
+        D["Kafka & API Ingestion"]
+        E["Lambda / Data Collectors"]
+  end
+ subgraph STOR["💾 Storage Layer"]
+        F[("S3 Data Lake")]
+        G[("MongoDB")]
+        H[("PostgreSQL")]
+        I[("Vector DB - RAG")]
+  end
+ subgraph PROC["⚙️ Processing & Analytics"]
+        J["PySpark Processing"]
+        K["Analytics Platform"]
+        L["Metadata Processing"]
+  end
+ subgraph MSG["📨 Messaging"]
+        M["RabbitMQ Async Jobs"]
+  end
+ subgraph GENAI["🤖 AI & Optimization"]
+        N["LLM + RAG Processing"]
+        O["Simulation & Optimization Engine"]
+  end
+ subgraph API["🌐 API Layer"]
+        P["FastAPI Services"]
+  end
+ subgraph UI["🎨 Applications"]
+        Q["Dashboard & Reports"]
+  end
+    A --> D
+    B --> E
+    C --> E
+    D --> J
+    E --> G
+    J --> F
+    G --> K & N
+    I --> K & N
+    K --> M
+    M --> L
+    L --> G
+    N --> O
+    O --> P
+    F --> P
+    H --> P
+    P --> Q

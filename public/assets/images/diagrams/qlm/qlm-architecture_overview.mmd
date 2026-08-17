@@ -1,0 +1,32 @@
+---
+config:
+  flowchart:
+    nodeSpacing: 28
+    rankSpacing: 36
+    diagramPadding: 8
+  layout: dagre
+---
+flowchart LR
+    A["📹 Live Video Feeds"] --> B["🤖 Computer Vision<br>OpenCV + TensorFlow"]
+    B --> C["⚙️ Queue Detection<br>People Counting Algorithm"]
+    C --> D[("💾 PostgreSQL")] & E["🚨 Alert System<br>Threshold Management"]
+    D --> F["📊 Analytics Dashboard"]
+    E --> G["👥 Supervisor Notifications"]
+    H["🐳 Docker + Kubernetes"] --> B
+    I["☁️ AWS Cloud"] --> H
+     A:::source
+     B:::processing
+     C:::processing
+     D:::storage
+     E:::alerting
+     F:::output
+     G:::output
+     H:::infra
+     I:::infra
+    classDef source fill:#BBDEFB,stroke:#1565C0,stroke-width:2px,color:#0D1B2A
+    classDef processing fill:#B2DFDB,stroke:#00695C,stroke-width:2px,color:#00332E
+    classDef storage fill:#FFE0B2,stroke:#EF6C00,stroke-width:2px,color:#4A2500
+    classDef alerting fill:#FFCDD2,stroke:#D32F2F,stroke-width:2px,color:#B71C1C
+    classDef output fill:#C8E6C9,stroke:#2E7D32,stroke-width:2px,color:#0B2E13
+    classDef infra fill:#E1BEE7,stroke:#6A1B9A,stroke-width:2px,color:#2D0A3A
+

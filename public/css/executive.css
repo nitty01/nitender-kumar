@@ -1,0 +1,530 @@
+/**
+ * Executive visual system
+ * Overlay for type, chrome, and Tailwind accent utilities.
+ * Loaded last so it wins over compiled cyan/indigo utilities.
+ */
+
+:root {
+  --font-display: "Newsreader", "Iowan Old Style", Palatino, Georgia, serif;
+  --font-ui: "Source Sans 3", "Segoe UI", system-ui, sans-serif;
+  --radius-sm: 0.25rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.375rem;
+  --radius-xl: 0.5rem;
+}
+
+html,
+body {
+  font-family: var(--font-ui);
+  background: var(--bg-dark);
+  color: var(--text-light);
+}
+
+/* Bridge compiled Tailwind accent utilities to live theme tokens */
+.text-accent {
+  color: var(--accent) !important;
+}
+
+.text-accent2,
+.hover\:text-accent2:hover {
+  color: var(--accent2) !important;
+}
+
+.text-accent\/30 {
+  color: color-mix(in srgb, var(--accent) 30%, transparent) !important;
+}
+
+.bg-accent {
+  background-color: var(--accent) !important;
+}
+
+.bg-accent2 {
+  background-color: var(--accent2) !important;
+}
+
+.bg-accent\/5,
+.bg-accent2\/5 {
+  background-color: color-mix(in srgb, var(--accent) 8%, transparent) !important;
+}
+
+.bg-accent\/10,
+.bg-accent2\/10 {
+  background-color: color-mix(in srgb, var(--accent) 12%, transparent) !important;
+}
+
+.bg-accent\/20,
+.bg-accent2\/20 {
+  background-color: color-mix(in srgb, var(--accent) 20%, transparent) !important;
+}
+
+.border-accent,
+.border-accent\/20,
+.border-accent\/30,
+.border-accent\/40,
+.border-accent2,
+.border-accent2\/20,
+.border-accent2\/30 {
+  border-color: color-mix(in srgb, var(--accent) 40%, var(--glass-border)) !important;
+}
+
+.from-accent {
+  --tw-gradient-from: var(--accent) var(--tw-gradient-from-position);
+}
+
+.from-accent2 {
+  --tw-gradient-from: var(--accent2) var(--tw-gradient-from-position);
+}
+
+.to-accent,
+.to-accent2 {
+  --tw-gradient-to: var(--accent2) var(--tw-gradient-to-position);
+}
+
+.via-accent\/50,
+.via-accent2\/50 {
+  --tw-gradient-to: color-mix(in srgb, var(--accent2) 50%, transparent);
+}
+
+.bg-gray-900,
+.bg-gray-900\/95,
+.dark\:bg-gray-800 {
+  background-color: var(--bg-dark) !important;
+}
+
+.bg-gray-800 {
+  background-color: var(--bg-dark-secondary) !important;
+}
+
+.border-gray-700,
+.border-gray-800,
+.border-gray-800\/50 {
+  border-color: var(--glass-border) !important;
+}
+
+.text-gray-200,
+.text-gray-300 {
+  color: color-mix(in srgb, var(--text-light) 82%, var(--text-muted)) !important;
+}
+
+.text-gray-400 {
+  color: var(--text-muted) !important;
+}
+
+/* Type: editorial display, quieter UI */
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+h1.bg-gradient-to-r,
+h2.bg-gradient-to-r,
+h3.bg-gradient-to-r,
+.hero-copy h1,
+.site-wordmark {
+  background-image: none !important;
+  -webkit-text-fill-color: var(--text-light);
+  color: var(--text-light);
+  background-clip: unset;
+  -webkit-background-clip: unset;
+}
+
+section h2.bg-gradient-to-r {
+  font-size: clamp(1.75rem, 3vw, 2.35rem);
+  margin-bottom: 1.5rem;
+}
+
+section h2.bg-gradient-to-r::after {
+  content: "";
+  display: block;
+  width: 2.25rem;
+  height: 1px;
+  margin-top: 0.85rem;
+  background: var(--accent);
+  opacity: 0.75;
+}
+
+section h2.bg-gradient-to-r.text-center::after {
+  margin-inline: auto;
+}
+
+a {
+  color: inherit;
+}
+
+a:hover {
+  color: var(--accent);
+}
+
+i.fas,
+i.fab,
+i.far,
+.site-nav i,
+.site-footer i {
+  color: inherit;
+}
+
+i.fas:hover,
+i.fab:hover,
+.site-nav i:hover {
+  color: inherit;
+}
+
+/* Nav */
+.site-nav {
+  background: color-mix(in srgb, var(--bg-dark) 92%, transparent);
+  border-bottom: 1px solid var(--glass-border);
+  box-shadow: none;
+  padding-block: 0.75rem;
+}
+
+.site-wordmark {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  color: var(--text-light) !important;
+  transform: none !important;
+}
+
+.site-wordmark:hover {
+  color: var(--accent) !important;
+  transform: none !important;
+}
+
+.site-nav-link {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-muted) !important;
+  background: transparent !important;
+}
+
+.site-nav-link:hover {
+  color: var(--text-light) !important;
+  background: transparent !important;
+}
+
+.site-nav-cta {
+  background-image: none !important;
+  background: transparent !important;
+  color: var(--text-light) !important;
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-sm);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+.site-nav-cta:hover {
+  border-color: var(--accent);
+  color: var(--accent) !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.site-nav-toggle {
+  background: var(--bg-dark-secondary);
+  color: var(--text-light);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-sm);
+}
+
+/* Hero */
+#hero-section,
+#hero-section-cto {
+  background-image: none !important;
+  background-color: var(--bg-dark);
+  min-height: calc(100vh - 4rem);
+}
+
+.hero-copy h1 {
+  font-size: clamp(2.75rem, 7vw, 4.5rem);
+  font-weight: 500;
+  line-height: 1.08;
+}
+
+.hero-copy .uppercase {
+  letter-spacing: 0.16em;
+  font-family: var(--font-ui);
+  font-weight: 500;
+}
+
+.animated-bg-element {
+  opacity: 0.045;
+  filter: saturate(0.35);
+}
+
+.profile-pic-blink {
+  animation: none;
+  border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
+}
+
+/* Primary actions in page content */
+a.bg-gradient-to-r.from-accent,
+button.bg-gradient-to-r.from-accent {
+  background-image: none !important;
+  background-color: var(--accent) !important;
+  color: var(--text-on-accent) !important;
+  -webkit-text-fill-color: var(--text-on-accent);
+  border-radius: var(--radius-sm);
+  box-shadow: none !important;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+
+a.bg-gradient-to-r.from-accent:hover,
+button.bg-gradient-to-r.from-accent:hover {
+  transform: none !important;
+  filter: brightness(1.06);
+}
+
+/* Cards: hairline, no bounce */
+.project-card,
+.testimonial-card,
+.contact-card,
+.industry-card,
+.glass-card,
+.glass {
+  box-shadow: none;
+  border-radius: var(--radius-md);
+}
+
+.project-card:hover,
+.testimonial-card:hover,
+.contact-card:hover,
+.industry-card:hover {
+  transform: translateY(-2px);
+  box-shadow: none;
+}
+
+.industry-card::before {
+  display: none;
+}
+
+.contact-card:hover .contact-icon,
+.industry-card:hover .icon-container {
+  transform: none;
+}
+
+.theme-switcher-btn {
+  border-radius: var(--radius-sm);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+}
+
+.theme-switcher-btn:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+.theme-dropdown {
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+}
+
+/* Footer */
+.site-footer {
+  background: var(--bg-dark);
+  border-top: 1px solid var(--glass-border);
+}
+
+.site-footer h3 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1.5rem;
+}
+
+.site-footer-social {
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-light);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.site-footer-social:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  transform: none;
+  background: transparent;
+}
+
+/* Contact modal */
+.contact-modal {
+  background: color-mix(in srgb, #000 55%, transparent);
+}
+
+.contact-modal__panel {
+  background: var(--bg-dark-secondary);
+  color: var(--text-light);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+}
+
+.contact-modal__panel h3 {
+  color: var(--text-light);
+}
+
+.contact-modal__action {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--glass-border);
+  background: transparent;
+  color: var(--text-light);
+  font-weight: 500;
+  letter-spacing: 0.03em;
+}
+
+.contact-modal__action:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.contact-modal__action--primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--text-on-accent);
+}
+
+.contact-modal__action--primary:hover {
+  color: var(--text-on-accent);
+  filter: brightness(1.06);
+}
+
+.form-input:focus,
+.form-input-group input:focus,
+.form-input-group textarea:focus {
+  transform: none;
+  box-shadow: 0 0 0 1px var(--accent);
+}
+
+.form-input-group i {
+  color: var(--text-muted);
+}
+
+.pulse-glow {
+  animation: none;
+}
+
+.bg-gradient-to-br.from-gray-900,
+.bg-gradient-to-br.from-gray-800,
+.bg-gradient-to-b.from-gray-900 {
+  background-image: none !important;
+  background-color: var(--bg-dark);
+}
+
+.theme-switcher [aria-hidden="true"] {
+  display: inline-block;
+}
+
+/* Official LinkedIn button — brand blue #0A66C2, In-bug, rounded rectangle */
+.btn-linkedin {
+  --linkedin-blue: #0a66c2;
+  --linkedin-blue-hover: #004182;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  height: 2.5rem;
+  padding: 0 1rem 0 0.5rem;
+  background: var(--linkedin-blue) !important;
+  color: #fff !important;
+  border: 0;
+  border-radius: 0.375rem;
+  font-family: "Source Sans 3", Arial, Helvetica, sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+  text-decoration: none !important;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.btn-linkedin:hover,
+.btn-linkedin:focus-visible {
+  background: var(--linkedin-blue-hover) !important;
+  color: #fff !important;
+}
+
+.btn-linkedin:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+.btn-linkedin__bug {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  background: #fff;
+  color: var(--linkedin-blue) !important;
+  border-radius: 0.125rem;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: -0.06em;
+  line-height: 1;
+}
+
+.btn-linkedin__label {
+  color: #fff !important;
+  padding-right: 0.15rem;
+}
+
+.btn-linkedin--icon {
+  width: 2.5rem;
+  padding: 0;
+  border-radius: 0.25rem;
+}
+
+.btn-linkedin--icon .btn-linkedin__bug {
+  background: transparent;
+  color: #fff !important;
+  font-size: 1.15rem;
+}
+
+.btn-linkedin--block {
+  width: 100%;
+  padding-inline: 1rem;
+}
+
+.mermaid h1,
+.mermaid h2,
+.mermaid h3 {
+  font-family: inherit;
+  letter-spacing: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .animated-bg-element,
+  .animate-fadeInUp,
+  .fade-in-up,
+  .animate-float,
+  .pulse-glow {
+    animation: none;
+  }
+}

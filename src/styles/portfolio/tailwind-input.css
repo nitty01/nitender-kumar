@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+  Rebuild after HTML class changes:
+    npx tailwindcss@3.4.17 -i ./css/tailwind-input.css -o ./css/tailwind.css --minify
+
+  Pages load css/tailwind.css (static). Do not use cdn.tailwindcss.com —
+  CDN failure left the site looking unstyled on GitHub Pages.
+*/

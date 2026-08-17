@@ -1,0 +1,358 @@
+/* home */
+/* Project Card Enhancements (page-specific) */
+        .project-card {
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .project-card:hover {
+          transform: translateY(-8px);
+        }
+
+        /* Stat Card Tooltip Positioning (page-specific) */
+        .stat-card .group:hover .absolute {
+          z-index: 50;
+        }
+
+/* about */
+/* Industry Card Animations (page-specific) */
+        .industry-card {
+          position: relative;
+          overflow: hidden;
+        }
+        
+        .industry-card::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: -100%;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+          transition: left 0.5s;
+        }
+        
+        .industry-card:hover::before {
+          left: 100%;
+        }
+        
+        .industry-card .icon-container {
+          position: relative;
+          z-index: 1;
+        }
+        
+        .industry-card:hover .icon-container {
+          transform: scale(1.1) rotate(5deg);
+        }
+        
+        .industry-card .tag {
+          transition: all 0.3s ease;
+        }
+        
+        .industry-card:hover .tag {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Staggered animation for cards */
+        .industry-card:nth-child(1) { animation-delay: 0.1s; }
+        .industry-card:nth-child(2) { animation-delay: 0.2s; }
+        .industry-card:nth-child(3) { animation-delay: 0.3s; }
+        .industry-card:nth-child(4) { animation-delay: 0.4s; }
+        .industry-card:nth-child(5) { animation-delay: 0.5s; }
+        .industry-card:nth-child(6) { animation-delay: 0.6s; }
+        .industry-card:nth-child(7) { animation-delay: 0.7s; }
+        .industry-card:nth-child(8) { animation-delay: 0.8s; }
+        
+        /* Floating animation for icons */
+        @keyframes float {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-10px); }
+        }
+        
+        .industry-card .icon-container:hover {
+          animation: float 2s ease-in-out infinite;
+        }
+        
+        /* Glow effect on hover */
+        .industry-card:hover {
+          box-shadow: 0 0 30px rgba(6, 182, 212, 0.3);
+        }
+        
+        /* Text reveal animation */
+        .industry-card h3 {
+          background: linear-gradient(45deg, #ffffff, #06b6d4, #ffffff);
+          background-size: 200% 200%;
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          animation: gradient-shift 3s ease infinite;
+        }
+        
+        @keyframes gradient-shift {
+          0% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
+        }
+        
+        /* Pulse effect for call-to-action */
+        .cta-button {
+          position: relative;
+          overflow: hidden;
+        }
+        
+        .cta-button::before {
+          content: '';
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          width: 0;
+          height: 0;
+          background: rgba(255, 255, 255, 0.2);
+          border-radius: 50%;
+          transform: translate(-50%, -50%);
+          transition: width 0.6s, height 0.6s;
+        }
+        
+        .cta-button:hover::before {
+          width: 300px;
+          height: 300px;
+        }
+
+        /* Scroll progress indicator (page-specific) */
+        .scroll-progress {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 0%;
+          height: 3px;
+          background: linear-gradient(to right, var(--accent), var(--accent2));
+          z-index: 9999;
+          transition: width 0.1s ease-out;
+        }
+
+        /* Profile picture hover effect */
+        .profile-pic-container {
+          transition: transform 0.3s ease;
+        }
+
+        .profile-pic-container:hover {
+          transform: scale(1.05);
+        }
+
+        .profile-pic-container:hover .profile-badge {
+          transform: scale(1.1) rotate(5deg);
+        }
+
+        /* Metric cards */
+        .metric-card {
+          transition: all 0.3s ease;
+        }
+
+        .metric-card:hover {
+          transform: translateY(-5px);
+          box-shadow: 0 10px 30px rgba(6, 182, 212, 0.2);
+        }
+
+/* tech-playground */
+/* Animated background gradient (page-specific) */
+        .animated-bg {
+          background: linear-gradient(-45deg, #0f172a, #1e293b, #0f172a, #1e1b4b);
+          background-size: 400% 400%;
+          animation: gradientShift 15s ease infinite;
+        }
+
+        @keyframes gradientShift {
+          0% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
+        }
+
+        /* Pulse animation for cards (page-specific) */
+        @keyframes pulse-glow {
+          0%, 100% { box-shadow: 0 0 20px rgba(6, 182, 212, 0.3); }
+          50% { box-shadow: 0 0 30px rgba(99, 102, 241, 0.5); }
+        }
+
+        .pulse-glow {
+          animation: pulse-glow 3s ease-in-out infinite;
+        }
+        .section-header {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .section-header p {
+            line-height: 1.6;
+            margin-top: 12px;
+        }
+
+        .section-header h1,
+        .section-header h2 {
+            margin-bottom: 16px;
+        }
+
+        .tech-card {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            overflow: hidden;
+            height: 100%;
+            padding: 16px;
+            gap: 8px;
+            box-sizing: border-box;
+        }
+
+        .tech-card-content {
+            overflow-y: auto;
+            max-height: 100%;
+            padding-right: 6px;
+        }
+
+        .tech-card-content::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .tech-card-content::-webkit-scrollbar-thumb {
+            background: rgba(100, 116, 139, 0.4);
+            border-radius: 4px;
+        }
+
+        .tech-card p,
+        .tech-card li {
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+
+
+        .architecture-principles {
+            margin-top: 40px;
+            font-weight: 500;
+        }
+        .feature-section {
+            max-width: 800px;
+            margin: 60px auto 0 auto;
+            text-align: center;
+        }
+
+        .feature-section h3 {
+            margin-top: 40px;
+            margin-bottom: 16px;
+        }
+
+        .feature-section .architecture-principles h3 {
+            margin-top: 0;
+        }
+
+        .feature-section ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .feature-section li {
+            margin-bottom: 8px;
+            color: #94a3b8;
+        }
+
+        .event-feature {
+            margin-top: 40px;
+            padding: 20px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .event-feature h3 {
+            margin-top: 0;
+        }
+
+        .interactive-btn {
+            margin-top: 20px;
+            display: inline-block;
+        }
+
+        .feature-section > *:not(.divider):not(:last-child) {
+            margin-bottom: 24px;
+        }
+
+        .divider {
+            height: 1px;
+            background: rgba(255, 255, 255, 0.08);
+            margin: 40px 0;
+        }
+
+/* architecture-copilot-studio */
+summary::-webkit-details-marker { display:none; }
+
+/* tprm-platform */
+summary::-webkit-details-marker { display:none; }
+
+/* c6insights */
+summary::-webkit-details-marker { display:none; }
+
+/* deep-view-analytics */
+summary::-webkit-details-marker { display:none; }
+
+/* qlm */
+summary::-webkit-details-marker { display:none; }
+
+/* self-analytics */
+/* Enhanced CSS Variables */
+        :root {
+          --accent: #06b6d4;
+          --accent2: '#6366f1';
+          --bg-dark: #0f172a;
+          --bg-light: #f8fafc;
+          --text-light: #f1f5f9;
+          --text-dark: #1e293b;
+        }
+        
+        /* Smooth scrolling */
+        html { 
+          scroll-behavior: smooth; 
+        }
+        
+        /* Theme transitions */
+        body {
+          background: var(--bg-dark);
+          color: var(--text-light);
+          transition: background 0.3s, color 0.3s;
+        }
+        
+        body.light {
+          background: var(--bg-light);
+          color: var(--text-dark);
+        }
+        
+        body.dark {
+          background: var(--bg-dark);
+          color: var(--text-light);
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+          width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+          background: rgba(255, 255, 255, 0.1);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+          background: linear-gradient(to bottom, var(--accent), var(--accent2));
+          border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+          background: linear-gradient(to bottom, var(--accent2), var(--accent));
+        }
+    
+
+summary::-webkit-details-marker { display:none; }
+
+/* nec-iot-big-data */
+summary::-webkit-details-marker { display:none; }
+
+/* paos */
+summary::-webkit-details-marker { display:none; }

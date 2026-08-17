@@ -1,0 +1,35 @@
+/**
+ * Dual-mode visibility rules.
+ * Layout mode and live sections come from admin-published site_settings.
+ */
+
+[data-site-mode="cto"] [data-mode="engineer"] {
+  display: none !important;
+}
+
+[data-site-mode="engineer"] [data-mode="cto"] {
+  display: none !important;
+}
+
+[data-show-experience="false"] #experience,
+[data-show-experience="false"] #experience-cto,
+[data-show-experience="false"] a[href="#experience"] {
+  display: none !important;
+}
+
+[data-show-blog="false"] a[href="/blog"] {
+  display: none !important;
+}
+
+[data-show-about="false"] a[href="/about"] {
+  display: none !important;
+}
+
+[data-show-contact="false"] a[href="/contact"] {
+  display: none !important;
+}
+
+[data-show-playground="false"] a[href="/tech-playground"],
+[data-site-mode="cto"] a[href="/tech-playground"] {
+  display: none !important;
+}

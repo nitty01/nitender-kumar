@@ -1,0 +1,86 @@
+---
+config:
+  flowchart:
+    nodeSpacing: 28
+    rankSpacing: 36
+    diagramPadding: 8
+  layout: dagre
+---
+flowchart TD
+ subgraph DS["📥 Data Sources"]
+        A[Vehicle Telemetry]
+        B[Marketing Platforms]
+        C[IoT Sensors]
+        D[CRM / Salesforce]
+  end
+  
+ subgraph IN["⚡ Ingestion Layer"]
+        E[RabbitMQ<br>Message Queue]
+  end
+  
+ subgraph PR["🧩 Processing Layer"]
+        F[Microservices - Python/FastAPI]
+        G[Data Validation]
+        H[Transformation & Enrichment]
+  end
+  
+ subgraph ST["💾 Storage Layer"]
+        I[(MongoDB<br>Raw Data Store)]
+        J[(PostgreSQL<br>Job & Metadata)]
+        K[(Time Series DB)]
+        L[(S3 Data Lake)]
+  end
+  
+ subgraph API["🌐 API Layer"]
+        M[FastAPI Gateway]
+        N[Real-time Analytics API]
+        O[Historical Data API]
+        P[AI/ML API]
+  end
+  
+ subgraph FE["🎨 Frontend Layer"]
+        Q[Analytics Dashboard]
+        R[Fleet Management UI]
+        S[Marketing Insights UI]
+        T[Customer 360 UI]
+  end
+  
+ subgraph INF["⚙️ Infrastructure"]
+        U[Docker & Kubernetes]
+        V[Observability - ELK Stack<br>Elasticsearch, Logstash, Kibana]
+        W[Security - IAM / RBAC]
+        X[AWS Cloud]
+  end
+  
+    DS --> IN
+    IN --> PR
+    PR --> ST
+    ST --> API
+    API --> FE
+    PR --> INF
+    INF --> ST
+    
+     DS:::sources
+     IN:::ingestion
+     PR:::processing
+     ST:::storage
+     API:::api
+     FE:::frontend
+     INF:::infra
+     
+
+class A,B,C,D sources;
+class E ingestion;
+class F,G,H processing;
+class I,J,K,L storage;
+class M,N,O,P api;
+class Q,R,S,T frontend;
+class U,V,W,X infra;
+
+    classDef sources fill:#E8F1F2,stroke:#134074,stroke-width:2px,color:#0B2545
+    classDef ingestion fill:#E3F2FD,stroke:#1565C0,stroke-width:2px,color:#0D47A1
+    classDef processing fill:#E8F5E9,stroke:#2E7D32,stroke-width:2px,color:#1B5E20
+    classDef storage fill:#FFF3E0,stroke:#EF6C00,stroke-width:2px,color:#E65100
+    classDef api fill:#F3E5F5,stroke:#6A1B9A,stroke-width:2px,color:#4A148C
+    classDef frontend fill:#FFF8E1,stroke:#F57F17,stroke-width:2px,color:#4E342E
+    classDef infra fill:#ECEFF1,stroke:#37474F,stroke-width:2px,color:#263238

@@ -1,0 +1,88 @@
+---
+config:
+  flowchart:
+    nodeSpacing: 28
+    rankSpacing: 36
+    diagramPadding: 8
+  layout: dagre
+---
+flowchart TD
+ subgraph CAM["📹 Camera Sources"]
+        A["Live Video Feeds"]
+        B["Queue Monitoring Cameras"]
+        C["Service Counter Cameras"]
+  end
+ subgraph CV["🤖 Computer Vision Module"]
+        D["OpenCV Image Processing"]
+        E["TensorFlow Object Detection"]
+        F["People Counting Algorithm"]
+        G["Queue Length Detection"]
+  end
+ subgraph PROC["⚙️ Processing Layer"]
+        H["Real-time Video Processing"]
+        I["Threshold Management"]
+        J["Alert Generation"]
+        K["Data Validation"]
+  end
+ subgraph STORAGE["💾 Data Storage"]
+        M[("PostgreSQL - Analytics")]
+        N[("Redis - Real-time Cache")]
+        O[("S3 - Video Archives")]
+  end
+ subgraph ALERT["🚨 Alerting System"]
+        P["Supervisor Notifications"]
+        Q["Dashboard Alerts"]
+        R["SMS/Email Integration"]
+        S["Mobile App Push"]
+  end
+ subgraph API["🌐 API Layer"]
+        T["Django REST API"]
+        U["WebSocket Real-time"]
+        V["Configuration API"]
+        W["Analytics API"]
+  end
+ subgraph UI["🎨 User Interface"]
+        X["Admin Dashboard"]
+        Y["Supervisor Console"]
+        Z["Analytics Reports"]
+        AA["Configuration Panel"]
+  end
+ subgraph INFRA["⚙️ Infrastructure"]
+        BB["Docker Containers"]
+        CC["Kubernetes Orchestration"]
+        DD["AWS EC2/ECS"]
+        EE["Load Balancer"]
+  end
+    CAM --> CV
+    CV --> PROC
+    PROC --> STORAGE & ALERT
+    STORAGE --> API
+    API --> UI
+    ALERT --> UI
+    INFRA --> CV & PROC & STORAGE
+     CAM:::camera
+     CV:::vision
+     PROC:::processing
+     STORAGE:::storage
+     ALERT:::alerting
+     API:::api
+     UI:::ui
+     INFRA:::infra
+    classDef camera fill:#E3F2FD,stroke:#1565C0,stroke-width:2px,color:#0D47A1
+    classDef vision fill:#E8F5E9,stroke:#2E7D32,stroke-width:2px,color:#1B5E20
+    classDef processing fill:#FFF3E0,stroke:#EF6C00,stroke-width:2px,color:#E65100
+    classDef storage fill:#F3E5F5,stroke:#6A1B9A,stroke-width:2px,color:#4A148C
+    classDef alerting fill:#FFEBEE,stroke:#C62828,stroke-width:2px,color:#B71C1C
+    classDef api fill:#E0F2F1,stroke:#00695C,stroke-width:2px,color:#004D40
+    classDef ui fill:#FFF8E1,stroke:#F57F17,stroke-width:2px,color:#4E342E
+    classDef infra fill:#ECEFF1,stroke:#37474F,stroke-width:2px,color:#263238
+
+class A,B,C camera;
+class D,E,F,G vision;
+class H,I,J,K processing;
+class M,N,O storage;
+class P,Q,R,S alerting;
+class T,U,V,W api;
+class X,Y,Z,AA ui;
+class BB,CC,DD,EE infra;
+

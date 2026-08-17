@@ -1,0 +1,21 @@
+/**
+ * MAIN STYLESHEET
+ * ===============
+ * This file imports all other CSS files in the correct order.
+ * Include this single file in your HTML files.
+ * 
+ * Order:
+ * 1. Theme variables (must be first)
+ * 2. Multi-theme definitions
+ * 3. Base styles
+ * 4. Components
+ * 5. Animations
+ */
+
+@import url('theme.css');
+@import url('themes.css');
+@import url('base.css');
+@import url('components.css');
+@import url('animations.css');
+@import url('theme-switcher.css');
+
