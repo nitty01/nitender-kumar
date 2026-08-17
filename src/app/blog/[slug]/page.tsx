@@ -19,7 +19,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const post = await getPost(slug);
-  if (!post) return { title: "Note | Nitender Kumar" };
+  if (!post) return { title: "Blog | Nitender Kumar" };
   return {
     title: `${post.title} | Nitender Kumar`,
     description: post.excerpt,
@@ -37,12 +37,21 @@ export default async function BlogPostPage({
   if (!post) notFound();
 
   return (
-    <main className="max-w-3xl mx-auto px-4 py-16">
+    <main className="blog-index blog-post">
       <p className="text-sm">
-        <Link href="/blog">← Notes</Link>
+        <Link href="/blog">← Blog</Link>
       </p>
-      <p className="mt-6 text-sm text-gray-500">{post.date}</p>
-      <h1 className="mt-2">{post.title}</h1>
+      {post.date ? <p className="blog-card-date">{post.date}</p> : null}
+      <h1>{post.title}</h1>
+      {post.topics.length > 0 ? (
+        <ul className="blog-topics">
+          {post.topics.map((topic) => (
+            <li key={topic}>
+              <Link href={`/blog/all?topic=${encodeURIComponent(topic)}`}>{topic}</Link>
+            </li>
+          ))}
+        </ul>
+      ) : null}
       <BlogContent body={post.body} />
     </main>
   );

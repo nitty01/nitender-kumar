@@ -46,7 +46,7 @@ export function SiteNav({ appearance }: { appearance: SiteAppearance }) {
         ) : null}
         {appearance.showBlog ? (
           <Link className="site-nav-link px-3 py-2" href="/blog" onClick={close}>
-            Notes
+            Blog
           </Link>
         ) : null}
         <Link

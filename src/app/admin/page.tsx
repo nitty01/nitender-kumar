@@ -23,7 +23,7 @@ export default async function AdminHomePage({
     <main className="admin-shell">
       <h1>Control plane</h1>
       <p className="admin-muted">
-        The public site only changes from here: layout mode, theme, live pages, and notes.
+        The public site only changes from here: layout mode, theme, live pages, and blog posts.
       </p>
       {params.saved === "appearance" ? <p className="admin-ok">Website appearance published.</p> : null}
       {params.saved === "recovered" ? (
@@ -33,7 +33,7 @@ export default async function AdminHomePage({
       <section className="admin-cards">
         <article>
           <h2>{live}</h2>
-          <p>Live notes</p>
+          <p>Published</p>
         </article>
         <article>
           <h2>{drafts}</h2>
@@ -83,7 +83,7 @@ export default async function AdminHomePage({
             <legend>Live pages and sections</legend>
             <label>
               <input type="checkbox" name="show_blog" defaultChecked={appearance.showBlog} />
-              Notes / blog
+              Blog
             </label>
             <label>
               <input type="checkbox" name="show_about" defaultChecked={appearance.showAbout} />
@@ -116,20 +116,20 @@ export default async function AdminHomePage({
 
       <section className="admin-panel">
         <div className="admin-row">
-          <h2>Recent notes</h2>
-          <Link href="/admin/posts/new">New note</Link>
+          <h2>Recent posts</h2>
+          <Link href="/admin/blog/new">New post</Link>
         </div>
         <ul className="admin-list">
           {posts.slice(0, 6).map((post) => (
             <li key={post.id}>
-              <Link href={`/admin/posts/${post.id}`}>{post.title}</Link>
+              <Link href={`/admin/blog/${post.id}`}>{post.title}</Link>
               <span className="admin-muted">
                 {post.archived ? "archived" : post.published ? "live" : "draft"} · {post.slug}
               </span>
             </li>
           ))}
         </ul>
-        <Link href="/admin/posts">Manage all notes →</Link>
+        <Link href="/admin/blog">Manage blog →</Link>
       </section>
     </main>
   );

@@ -46,9 +46,12 @@ function mapPost(row: Record<string, unknown>): AdminPost {
     title: String(row.title),
     excerpt: (row.excerpt as string | null) ?? null,
     body: String(row.body ?? ""),
+    topics: Array.isArray(row.topics)
+      ? row.topics.filter((item): item is string => typeof item === "string")
+      : [],
     published: Boolean(row.published),
     archived: Boolean(row.archived),
-    published_at: asIso(row.published_at),
+    published_at: asIso(row.published_at) || null,
     updated_at: asIso(row.updated_at),
   };
 }
@@ -56,7 +59,7 @@ function mapPost(row: Record<string, unknown>): AdminPost {
 export async function dbListPosts(): Promise<AdminPost[]> {
   return withDb(async (client) => {
     const { rows } = await client.query(
-      `select id, slug, title, excerpt, body, published, archived, published_at, updated_at
+      `select id, slug, title, excerpt, body, topics, published, archived, published_at, updated_at
        from public.posts
        order by updated_at desc`,
     );
@@ -67,7 +70,7 @@ export async function dbListPosts(): Promise<AdminPost[]> {
 export async function dbGetPost(id: string): Promise<AdminPost | null> {
   return withDb(async (client) => {
     const { rows } = await client.query(
-      `select id, slug, title, excerpt, body, published, archived, published_at, updated_at
+      `select id, slug, title, excerpt, body, topics, published, archived, published_at, updated_at
        from public.posts where id = $1`,
       [id],
     );
@@ -81,6 +84,7 @@ export async function dbUpsertPost(input: {
   title: string;
   excerpt: string;
   body: string;
+  topics: string[];
   published: boolean;
   archived: boolean;
 }) {
@@ -88,14 +92,19 @@ export async function dbUpsertPost(input: {
     if (input.id) {
       const { rows } = await client.query<{ id: string }>(
         `update public.posts
-         set slug=$1, title=$2, excerpt=$3, body=$4, published=$5, archived=$6
-         where id=$7
+         set slug=$1, title=$2, excerpt=$3, body=$4, topics=$5::text[], published=$6, archived=$7,
+             published_at = case
+               when $6 and not published then now()
+               else published_at
+             end
+         where id=$8
          returning id`,
         [
           input.slug.trim(),
           input.title.trim(),
           input.excerpt.trim() || null,
           input.body,
+          input.topics,
           input.published,
           input.archived,
           input.id,
@@ -104,14 +113,15 @@ export async function dbUpsertPost(input: {
       return rows[0].id;
     }
     const { rows } = await client.query<{ id: string }>(
-      `insert into public.posts (slug, title, excerpt, body, published, archived)
-       values ($1,$2,$3,$4,$5,$6)
+      `insert into public.posts (slug, title, excerpt, body, topics, published, archived, published_at)
+       values ($1,$2,$3,$4,$5::text[],$6,$7, case when $6 then now() else null end)
        returning id`,
       [
         input.slug.trim(),
         input.title.trim(),
         input.excerpt.trim() || null,
         input.body,
+        input.topics,
         input.published,
         input.archived,
       ],
@@ -136,6 +146,10 @@ export async function dbSetPostFlags(
     if (typeof flags.published === "boolean") {
       vals.push(flags.published);
       sets.push(`published = $${vals.length}`);
+      if (flags.published) {
+        sets.push(`published_at = coalesce(published_at, now())`);
+        sets.push(`archived = false`);
+      }
     }
     if (typeof flags.archived === "boolean") {
       vals.push(flags.archived);

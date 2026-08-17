@@ -40,7 +40,7 @@ export function SiteFooter({ appearance }: { appearance: SiteAppearance }) {
               {appearance.showBlog ? (
                 <li>
                   <Link href="/blog" className="text-gray-400 hover:text-accent transition-colors">
-                    Notes
+                    Blog
                   </Link>
                 </li>
               ) : null}

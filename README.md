@@ -37,16 +37,16 @@ Admin auth and admin writes require:
 - `ADMIN_SESSION_SECRET`
 - `SUPABASE_SERVICE_ROLE_KEY`
 
-Public reads still use the publishable/anon Supabase key. Apply `supabase/schema.sql` then
-`supabase/schema-admin.sql`.
+Public reads still use the publishable/anon Supabase key. Apply `supabase/schema.sql`,
+`supabase/schema-admin.sql`, then `supabase/schema-blog.sql`.
 
 The public site does not change itself. Visitors cannot switch theme, layout mode, or live
-pages. Those are published from `/admin` (Public website). Live notes are only posts marked
-published and not archived.
+pages. Those are published from `/admin` (Public website). Blog posts stay drafts until
+published; only published, non-archived posts appear on `/blog`.
 
 ## Media (Cloudinary)
 
-Notes can embed images, video, and PDFs from Cloudinary. In the admin editor, **Upload media**
+Blog posts can embed images, video, and PDFs from Cloudinary. In the admin editor, **Upload media**
 sends the file with a signed server upload into the app-managed folder
 `nitender-kumar-portfolio/site-media`.
 

@@ -6,11 +6,35 @@ export type AdminPost = {
   title: string;
   excerpt: string | null;
   body: string;
+  topics: string[];
   published: boolean;
   archived: boolean;
-  published_at: string;
+  published_at: string | null;
   updated_at: string;
 };
+
+const POST_COLUMNS =
+  "id,slug,title,excerpt,body,topics,published,archived,published_at,updated_at";
+
+function asTopics(value: unknown): string[] {
+  if (!Array.isArray(value)) return [];
+  return value.filter((item): item is string => typeof item === "string" && item.trim().length > 0);
+}
+
+function mapAdminPost(row: Record<string, unknown>): AdminPost {
+  return {
+    id: String(row.id),
+    slug: String(row.slug),
+    title: String(row.title),
+    excerpt: (row.excerpt as string | null) ?? null,
+    body: String(row.body ?? ""),
+    topics: asTopics(row.topics),
+    published: Boolean(row.published),
+    archived: Boolean(row.archived),
+    published_at: (row.published_at as string | null) ?? null,
+    updated_at: String(row.updated_at ?? ""),
+  };
+}
 
 export type SiteMode = "cto" | "engineer";
 
@@ -54,23 +78,34 @@ export function createAdminSupabase(): SupabaseClient {
 
 export async function listAdminPosts(): Promise<AdminPost[]> {
   const client = createAdminSupabase();
-  const { data, error } = await client
+  const withTopics = await client
+    .from("posts")
+    .select(POST_COLUMNS)
+    .order("updated_at", { ascending: false });
+  if (!withTopics.error) {
+    return (withTopics.data ?? []).map((row) => mapAdminPost(row as Record<string, unknown>));
+  }
+  const fallback = await client
     .from("posts")
     .select("id,slug,title,excerpt,body,published,archived,published_at,updated_at")
     .order("updated_at", { ascending: false });
-  if (error) throw new Error(error.message);
-  return (data ?? []) as AdminPost[];
+  if (fallback.error) throw new Error(fallback.error.message);
+  return (fallback.data ?? []).map((row) => mapAdminPost(row as Record<string, unknown>));
 }
 
 export async function getAdminPost(id: string): Promise<AdminPost | null> {
   const client = createAdminSupabase();
-  const { data, error } = await client
+  const withTopics = await client.from("posts").select(POST_COLUMNS).eq("id", id).maybeSingle();
+  if (!withTopics.error) {
+    return withTopics.data ? mapAdminPost(withTopics.data as Record<string, unknown>) : null;
+  }
+  const fallback = await client
     .from("posts")
     .select("id,slug,title,excerpt,body,published,archived,published_at,updated_at")
     .eq("id", id)
     .maybeSingle();
-  if (error) throw new Error(error.message);
-  return (data as AdminPost | null) ?? null;
+  if (fallback.error) throw new Error(fallback.error.message);
+  return fallback.data ? mapAdminPost(fallback.data as Record<string, unknown>) : null;
 }
 
 export async function upsertAdminPost(input: {
@@ -79,31 +114,29 @@ export async function upsertAdminPost(input: {
   title: string;
   excerpt: string;
   body: string;
+  topics: string[];
   published: boolean;
   archived: boolean;
 }) {
   const client = createAdminSupabase();
-  const payload = {
+  const payload: Record<string, unknown> = {
     slug: input.slug.trim(),
     title: input.title.trim(),
     excerpt: input.excerpt.trim() || null,
     body: input.body,
+    topics: input.topics,
     published: input.published,
     archived: input.archived,
-    published_at: input.published ? new Date().toISOString() : undefined,
   };
 
   if (input.id) {
+    const existing = await getAdminPost(input.id);
+    if (input.published && existing && !existing.published) {
+      payload.published_at = new Date().toISOString();
+    }
     const { data, error } = await client
       .from("posts")
-      .update({
-        slug: payload.slug,
-        title: payload.title,
-        excerpt: payload.excerpt,
-        body: payload.body,
-        published: payload.published,
-        archived: payload.archived,
-      })
+      .update(payload)
       .eq("id", input.id)
       .select("id")
       .single();
@@ -111,18 +144,8 @@ export async function upsertAdminPost(input: {
     return data.id as string;
   }
 
-  const { data, error } = await client
-    .from("posts")
-    .insert({
-      slug: payload.slug,
-      title: payload.title,
-      excerpt: payload.excerpt,
-      body: payload.body,
-      published: payload.published,
-      archived: payload.archived,
-    })
-    .select("id")
-    .single();
+  payload.published_at = input.published ? new Date().toISOString() : null;
+  const { data, error } = await client.from("posts").insert(payload).select("id").single();
   if (error) throw new Error(error.message);
   return data.id as string;
 }
@@ -138,6 +161,14 @@ export async function setPostFlags(
   flags: Partial<Pick<AdminPost, "published" | "archived">>,
 ) {
   const client = createAdminSupabase();
-  const { error } = await client.from("posts").update(flags).eq("id", id);
+  const patch: Record<string, unknown> = { ...flags };
+  if (flags.published === true) {
+    const existing = await getAdminPost(id);
+    if (existing && !existing.published) {
+      patch.published_at = new Date().toISOString();
+    }
+    patch.archived = false;
+  }
+  const { error } = await client.from("posts").update(patch).eq("id", id);
   if (error) throw new Error(error.message);
 }

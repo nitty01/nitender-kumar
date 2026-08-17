@@ -34,6 +34,7 @@ import {
   isRateLimited,
   recordSecurityEvent,
 } from "@/lib/admin-rate-limit";
+import { parseTopics } from "@/lib/blog";
 
 function isNextControlFlow(error: unknown) {
   if (!error || typeof error !== "object" || !("digest" in error)) return false;
@@ -155,21 +156,26 @@ export async function uploadMediaAction(formData: FormData) {
 export async function savePostAction(formData: FormData) {
   await requireAdminSession();
   const id = String(formData.get("id") ?? "") || undefined;
+  const intent = String(formData.get("intent") ?? "draft");
+  const published = intent === "publish" || intent === "save";
+  let slug = String(formData.get("slug") ?? "");
+  if (slug === "all") slug = "all-posts";
   const payload = {
     id,
-    slug: String(formData.get("slug") ?? ""),
+    slug,
     title: String(formData.get("title") ?? ""),
     excerpt: String(formData.get("excerpt") ?? ""),
     body: String(formData.get("body") ?? ""),
-    published: formData.get("published") === "on",
-    archived: formData.get("archived") === "on",
+    topics: parseTopics(String(formData.get("topics") ?? "")),
+    published,
+    archived: false,
   };
   if (!payload.slug || !payload.title || !payload.body) {
     throw new Error("Title, slug, and body are required");
   }
   const savedId = await sbUpsert(payload);
   revalidatePath("/", "layout");
-  redirect(`/admin/posts/${savedId}`);
+  redirect(`/admin/blog/${savedId}?saved=${published ? "published" : "draft"}`);
 }
 
 export async function deletePostAction(formData: FormData) {
@@ -178,7 +184,7 @@ export async function deletePostAction(formData: FormData) {
   if (!id) return;
   await sbDelete(id);
   revalidatePath("/", "layout");
-  redirect("/admin/posts");
+  redirect("/admin/blog");
 }
 
 export async function archivePostAction(formData: FormData) {
@@ -186,9 +192,9 @@ export async function archivePostAction(formData: FormData) {
   const id = String(formData.get("id") ?? "");
   const archived = formData.get("archived") === "true";
   if (!id) return;
-  await sbFlags(id, { archived });
+  await sbFlags(id, { archived, ...(archived ? { published: false } : {}) });
   revalidatePath("/", "layout");
-  redirect("/admin/posts");
+  redirect("/admin/blog");
 }
 
 export async function publishPostAction(formData: FormData) {
@@ -198,7 +204,7 @@ export async function publishPostAction(formData: FormData) {
   if (!id) return;
   await sbFlags(id, { published, ...(published ? { archived: false } : {}) });
   revalidatePath("/", "layout");
-  redirect("/admin/posts");
+  redirect("/admin/blog");
 }
 
 export async function getAppearanceAction(): Promise<SiteAppearance> {

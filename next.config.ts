@@ -64,6 +64,9 @@ const nextConfig: NextConfig = {
         destination: "/projects/:slug",
         permanent: true,
       },
+      { source: "/admin/posts", destination: "/admin/blog", permanent: false },
+      { source: "/admin/posts/new", destination: "/admin/blog/new", permanent: false },
+      { source: "/admin/posts/:id", destination: "/admin/blog/:id", permanent: false },
     ];
   },
 };
