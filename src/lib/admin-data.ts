@@ -1,4 +1,5 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import { isArticleLayout, resolveBlocks, type ArticleLayout, type BlogBlock } from "@/lib/blog-blocks";
 
 export type AdminPost = {
   id: string;
@@ -6,6 +7,9 @@ export type AdminPost = {
   title: string;
   excerpt: string | null;
   body: string;
+  blocks: BlogBlock[];
+  heroUrl: string | null;
+  layout: ArticleLayout;
   topics: string[];
   published: boolean;
   archived: boolean;
@@ -14,7 +18,7 @@ export type AdminPost = {
 };
 
 const POST_COLUMNS =
-  "id,slug,title,excerpt,body,topics,published,archived,published_at,updated_at";
+  "id,slug,title,excerpt,body,blocks,hero_url,layout,topics,published,archived,published_at,updated_at";
 
 function asTopics(value: unknown): string[] {
   if (!Array.isArray(value)) return [];
@@ -28,6 +32,9 @@ function mapAdminPost(row: Record<string, unknown>): AdminPost {
     title: String(row.title),
     excerpt: (row.excerpt as string | null) ?? null,
     body: String(row.body ?? ""),
+    blocks: resolveBlocks(row.blocks, String(row.body ?? "")),
+    heroUrl: typeof row.hero_url === "string" && row.hero_url ? row.hero_url : null,
+    layout: isArticleLayout(row.layout) ? row.layout : "flow",
     topics: asTopics(row.topics),
     published: Boolean(row.published),
     archived: Boolean(row.archived),
@@ -114,6 +121,9 @@ export async function upsertAdminPost(input: {
   title: string;
   excerpt: string;
   body: string;
+  blocks: BlogBlock[];
+  heroUrl: string | null;
+  layout: ArticleLayout;
   topics: string[];
   published: boolean;
   archived: boolean;
@@ -124,6 +134,9 @@ export async function upsertAdminPost(input: {
     title: input.title.trim(),
     excerpt: input.excerpt.trim() || null,
     body: input.body,
+    blocks: input.blocks,
+    hero_url: input.heroUrl?.trim() || null,
+    layout: input.layout,
     topics: input.topics,
     published: input.published,
     archived: input.archived,

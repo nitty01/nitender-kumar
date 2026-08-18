@@ -2,8 +2,8 @@
 
 | File | Use |
 |------|-----|
-| `architecture-copilot-studio-architecture_overview.mmd` | L1 - Studio experience, design stages, Azure platform |
-| `architecture-copilot-studio-architecture_detailed.mmd` | L2 - Chat, canvas, LangGraph stages, tools, artifacts |
+| `architecture-copilot-studio-architecture_overview.mmd` | L1 overview (Mermaid) |
+| `architecture-copilot-studio-architecture_detailed.drawio` | L2 detailed (Draw.io) |
 | `architecture-copilot-studio-card.svg` | Project grid thumbnail |
 
-AWS reference diagrams live under `html-portfolio/.temp/diagrams/architecture-copilot-studio/` (gitignored).
+Regenerate L2 XML with `node scripts/generate-project-drawio.mjs`.

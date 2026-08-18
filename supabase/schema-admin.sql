@@ -179,3 +179,9 @@ update public.posts
 set topics = array['Platform', 'Leadership']
 where slug = 'platforms-over-projects'
   and cardinality(topics) = 0;
+
+alter table public.posts
+  add column if not exists blocks jsonb not null default '[]'::jsonb;
+
+alter table public.posts
+  add column if not exists hero_url text;

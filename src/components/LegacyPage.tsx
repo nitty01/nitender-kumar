@@ -5,12 +5,6 @@ import { bindDiagramCanvas, installDiagramWindowApi } from "@/lib/diagram-canvas
 
 declare global {
   interface Window {
-    mermaid?: {
-      initialize: (config: Record<string, unknown>) => void;
-      render: (id: string, text: string) => Promise<{ svg: string }>;
-      registerLayout?: (layout: unknown) => void;
-      registerLayoutLoaders?: (layout: unknown) => void;
-    };
     mermaidElk?: unknown;
     __portfolioRenderMermaid?: (container: HTMLElement, source: string) => Promise<void>;
     loadDiagram?: DiagramLoader & { __wrapped?: boolean };
@@ -32,12 +26,13 @@ function compactMermaidSource(source: string) {
   return String(source || "")
     .replace(/^\uFEFF/, "")
     .replace(/layout:\s*elk/gi, "layout: dagre")
-    .replace(/nodeSpacing:\s*\d+/gi, "nodeSpacing: 28")
-    .replace(/rankSpacing:\s*\d+/gi, "rankSpacing: 36")
-    .replace(/['"]nodeSpacing['"]\s*:\s*\d+/gi, '"nodeSpacing": 28')
-    .replace(/['"]rankSpacing['"]\s*:\s*\d+/gi, '"rankSpacing": 36')
-    .replace(/diagramPadding:\s*\d+/gi, "diagramPadding: 8")
-    .replace(/['"]diagramPadding['"]\s*:\s*\d+/gi, '"diagramPadding": 8')
+    .replace(/nodeSpacing:\s*\d+/gi, "nodeSpacing: 48")
+    .replace(/rankSpacing:\s*\d+/gi, "rankSpacing: 64")
+    .replace(/['"]nodeSpacing['"]\s*:\s*\d+/gi, '"nodeSpacing": 48')
+    .replace(/['"]rankSpacing['"]\s*:\s*\d+/gi, '"rankSpacing": 64')
+    .replace(/diagramPadding:\s*\d+/gi, "diagramPadding: 16")
+    .replace(/['"]diagramPadding['"]\s*:\s*\d+/gi, '"diagramPadding": 16')
+    .replace(/curve:\s*['"]?basis['"]?/gi, "curve: linear")
     .trim();
 }
 
@@ -53,15 +48,26 @@ function installMermaidRenderer() {
       startOnLoad: false,
       theme: "neutral",
       securityLevel: "strict",
-      fontFamily: "Source Sans 3, Segoe UI, sans-serif",
+      fontFamily: "Inter, Helvetica Neue, Segoe UI, sans-serif",
+      themeVariables: {
+        background: "#eef2f6",
+        primaryColor: "#ccfbf1",
+        primaryTextColor: "#042f2e",
+        primaryBorderColor: "#0f766e",
+        lineColor: "#334155",
+        clusterBkg: "#f8fafc",
+        clusterBorder: "#94a3b8",
+        edgeLabelBackground: "#fafafa",
+        fontFamily: "Inter, Helvetica Neue, Segoe UI, sans-serif",
+      },
       flowchart: {
         htmlLabels: false,
         useMaxWidth: false,
-        curve: "basis",
-        padding: 8,
-        nodeSpacing: 28,
-        rankSpacing: 36,
-        diagramPadding: 8,
+        curve: "linear",
+        padding: 16,
+        nodeSpacing: 48,
+        rankSpacing: 64,
+        diagramPadding: 16,
       },
     });
     const holder = container.querySelector<HTMLElement>(".mermaid") ?? container;
@@ -101,6 +107,8 @@ function patchLegacyScript(script: string) {
       )
       .replace(/loadDiagram\('overview',\s*'engineer'\);/g, "")
       .replace(/loadDiagram\('overview'\);/g, "")
+      .replace(/\bloadDiagram\(type,\s*mode\);/g, "window.loadDiagram(type, mode);")
+      .replace(/\bloadDiagram\(type\);/g, "window.loadDiagram(type);")
       .replace(
         /const diagramText = await response\.text\(\);/g,
         "if (!response.ok) throw new Error('Failed to fetch ' + filePath + ' (' + response.status + ')'); const diagramText = await response.text();",
@@ -155,6 +163,80 @@ function exportPageHandlers() {
 
 type DiagramLoader = (type?: string, mode?: string) => Promise<void> | void;
 
+type DrawioHost = HTMLElement & { __drawioCleanup?: () => void };
+
+function projectSlugFromPath() {
+  const match = window.location.pathname.match(/\/projects\/([^/]+)/);
+  return match?.[1] ?? "";
+}
+
+function disposeDrawio(container: HTMLElement) {
+  const host = container as DrawioHost;
+  host.__drawioCleanup?.();
+  host.__drawioCleanup = undefined;
+  container.classList.remove("diagram-container--drawio");
+}
+
+function diagramErrorMarkup() {
+  return `
+                    <div class="text-center text-red-400">
+                        <i class="fas fa-exclamation-triangle text-2xl mb-2"></i>
+                        <p>Error loading architecture diagram</p>
+                    </div>
+                `;
+}
+
+function diagramControlsMarkup(mode: string) {
+  return `
+                    <div class="diagram-controls">
+                        <button class="diagram-control-btn" onclick="zoomIn('${mode}')" title="Zoom In">
+                            <i class="fas fa-search-plus"></i>
+                        </button>
+                        <button class="diagram-control-btn" onclick="zoomOut('${mode}')" title="Zoom Out">
+                            <i class="fas fa-search-minus"></i>
+                        </button>
+                        <button class="diagram-control-btn" onclick="resetZoom('${mode}')" title="Reset Zoom">
+                            <i class="fas fa-expand-arrows-alt"></i>
+                        </button>
+                        <button class="diagram-control-btn" onclick="toggleFullscreen('${mode}')" title="Fullscreen">
+                            <i class="fas fa-expand"></i>
+                        </button>
+                    </div>
+                `;
+}
+
+async function renderProjectDrawio(container: HTMLElement, mode: string) {
+  disposeDrawio(container);
+  const slug = projectSlugFromPath();
+  const zoomId = mode === "cto" ? "cto-diagram-zoom" : "diagram-zoom";
+  const filePath = `/assets/images/diagrams/${slug}/${slug}-architecture_detailed.drawio`;
+  const response = await fetch(filePath);
+  if (!response.ok) {
+    throw new Error(`Failed to fetch ${filePath} (${response.status})`);
+  }
+  const xml = await response.text();
+  if (!xml.includes("<mxfile") && !xml.includes("<mxGraphModel")) {
+    throw new Error("Invalid Draw.io source");
+  }
+
+  container.classList.add("diagram-container--drawio");
+  container.innerHTML = `
+                    <div class="diagram-zoom" id="${zoomId}">
+                        <iframe class="project-drawio" title="Detailed architecture" loading="eager" referrerpolicy="no-referrer"></iframe>
+                    </div>
+                    ${diagramControlsMarkup(mode)}
+                `;
+
+  const iframe = container.querySelector<HTMLIFrameElement>("iframe.project-drawio");
+  if (!iframe) throw new Error("Draw.io frame missing");
+
+  const origin = "https://viewer.diagrams.net";
+  iframe.src = `${origin}/?lightbox=1&toolbar=0&nav=1&layers=1&chrome=0&editable=0#R${encodeURIComponent(xml)}`;
+
+  (container as DrawioHost).__drawioCleanup = () => undefined;
+  bindDiagramCanvas(container);
+}
+
 function isRenderable(element: HTMLElement | null) {
   if (!element) return false;
   const details = element.closest("details");
@@ -190,6 +272,17 @@ function wrapDiagramLoader() {
       resolved === "cto" ? "cto-diagram-container" : "diagram-container",
     );
     if (!isRenderable(container)) return;
+    if (type === "detailed") {
+      try {
+        await renderProjectDrawio(container, resolved);
+      } catch (error) {
+        console.error("Error loading diagram:", error);
+        disposeDrawio(container);
+        container.innerHTML = diagramErrorMarkup();
+      }
+      return;
+    }
+    disposeDrawio(container);
     return original(type, resolved);
   };
   wrapped.__wrapped = true;
@@ -290,6 +383,9 @@ export function LegacyPage({
     return () => {
       cancelled = true;
       injected.forEach((tag) => tag.remove());
+      document
+        .querySelectorAll<HTMLElement>("#diagram-container, #cto-diagram-container")
+        .forEach((node) => disposeDrawio(node));
       // Drop page handlers so the next project can install fresh ones.
       delete window.loadDiagram;
       delete window.switchDiagram;

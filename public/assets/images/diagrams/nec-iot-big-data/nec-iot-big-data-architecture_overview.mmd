@@ -1,38 +1,38 @@
 ---
 config:
   flowchart:
-    nodeSpacing: 28
-    rankSpacing: 36
-    diagramPadding: 8
+    nodeSpacing: 48
+    rankSpacing: 64
+    diagramPadding: 16
+    htmlLabels: false
+    curve: linear
   layout: dagre
 ---
 flowchart LR
-    A["IoT Devices"] --> B["⚡ Edge Processing<br>Data Preprocessing"]
-    B --> C["📥 Kafka + MQTT<br>Message Streaming"]
-    C --> D["🌊 Stream Processing<br>Spark + Flink"] & E["📊 Batch Processing<br>Hadoop + Spark"]
-    D --> F[("HDFS + HBase")]
-    E --> F
-    F --> G["🤖 ML Engine<br>Predictive Analytics"]
-    G --> H["📈 Real-time Dashboards"] & I["Historical Reports"]
-    J["Kubernetes Cluster"] --> D
-    K["🏢 NEC MMS Platform"] --> J
-     A:::source
-     B:::edge
-     C:::ingestion
-     D:::processing
-     E:::processing
-     F:::storage
-     G:::analytics
-     H:::output
-     I:::output
-     J:::infra
-     K:::infra
-    classDef source fill:#BBDEFB,stroke:#1565C0,stroke-width:2px,color:#0D1B2A
-    classDef edge fill:#B2DFDB,stroke:#00695C,stroke-width:2px,color:#00332E
-    classDef ingestion fill:#D1C4E9,stroke:#4527A0,stroke-width:2px,color:#1A093F
-    classDef processing fill:#FFE0B2,stroke:#EF6C00,stroke-width:2px,color:#4A2500
-    classDef storage fill:#C8E6C9,stroke:#2E7D32,stroke-width:2px,color:#0B2E13
-    classDef analytics fill:#F8BBD0,stroke:#AD1457,stroke-width:2px,color:#4A0E2E
-    classDef output fill:#E1BEE7,stroke:#6A1B9A,stroke-width:2px,color:#2D0A3A
-    classDef infra fill:#FFF9C4,stroke:#F57F17,stroke-width:2px,color:#E65100
-
+  IOT["IoT devices"]
+  subgraph DMZ["DMZ"]
+    GW["API gateway"]
+    AUTH["AuthN / AuthZ"]
+  end
+  subgraph APPZ["App zone"]
+    BUS["Kafka + MQTT"]
+    STREAM["Spark / Flink"]
+  end
+  subgraph DATAZ["Data zone"]
+    HDFS[("HDFS + HBase")]
+  end
+  OPS["Operations dashboards"]
+  IOT --> GW
+  GW --> BUS
+  BUS --> STREAM
+  STREAM --> HDFS
+  HDFS --> OPS
+  AUTH -.-> GW
+  class IOT external
+  class BUS,STREAM,OPS compute
+  class HDFS data
+  class GW,AUTH security
+  classDef compute fill:#ccfbf1,stroke:#0f766e,stroke-width:1.5px,color:#042f2e
+  classDef data fill:#dbeafe,stroke:#1d4ed8,stroke-width:1.5px,color:#1e3a8a
+  classDef security fill:#fef3c7,stroke:#b45309,stroke-width:1.5px,color:#78350f
+  classDef external fill:#f8fafc,stroke:#64748b,stroke-width:1.5px,color:#0f172a,stroke-dasharray:6 4

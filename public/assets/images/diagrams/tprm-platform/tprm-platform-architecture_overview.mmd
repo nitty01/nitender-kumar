@@ -1,36 +1,35 @@
-%%{init: {'flowchart': {'nodeSpacing': 28, 'rankSpacing': 36, 'useMaxWidth': false, 'diagramPadding': 8}}}%%
+---
+config:
+  flowchart:
+    nodeSpacing: 48
+    rankSpacing: 64
+    diagramPadding: 16
+    htmlLabels: false
+    curve: linear
+  layout: dagre
+---
 flowchart TB
-
-%% Nodes with icons
-SN["🧑‍💼 ServiceNow<br/>Enterprise workflows"]
-ORCH["🎯 Request Orchestration<br/>Routing & workflow control"]
-AR["🧠 Agent Runtime<br/>GenAI Core"]
-DI["📄 Azure AI<br/>Document Intelligence"]
-COSMOS[("🗄️ Cosmos DB<br/>State & stages")]
-SB["📬 Azure Service Bus<br/>Async messaging"]
-CALLBACK["🔁 Integration Layer<br/>ServiceNow callback"]
-
-%% Primary Flow (clean path)
-SN --> ORCH --> AR --> DI
-
-%% Messaging (controlled to avoid overlap)
-ORCH --> SB
-SB --> AR
-
-%% Data Flow
-AR --> COSMOS
-DI --> COSMOS
-
-%% Callback
-AR --> CALLBACK --> SN
-
-%% Styling
-classDef ext fill:#1e3a5f,stroke:#38bdf8,stroke-width:2px,color:#e2e8f0
-classDef core fill:#312e81,stroke:#a78bfa,stroke-width:2px,color:#f5f3ff
-classDef data fill:#14532d,stroke:#4ade80,stroke-width:2px,color:#ecfccb
-classDef msg fill:#422006,stroke:#fb923c,stroke-width:2px,color:#ffedd5
-
-class SN,CALLBACK ext
-class ORCH,AR core
-class DI,COSMOS data
-class SB msg
+  SN["ServiceNow"]
+  subgraph EDGE["Public edge"]
+    WAF["APIM + WAF"]
+    KV["Entra + Key Vault"]
+  end
+  subgraph VNET["Azure VNet"]
+    ORCH["Orchestration + agents"]
+    COSMOS[("Cosmos + Private Link")]
+    BLOB[("Blob evidence")]
+  end
+  SN --> WAF
+  WAF --> ORCH
+  ORCH --> COSMOS
+  ORCH --> BLOB
+  ORCH -.->|async callback| SN
+  KV -.-> WAF
+  class SN external
+  class ORCH compute
+  class COSMOS,BLOB data
+  class WAF,KV security
+  classDef compute fill:#ccfbf1,stroke:#0f766e,stroke-width:1.5px,color:#042f2e
+  classDef data fill:#dbeafe,stroke:#1d4ed8,stroke-width:1.5px,color:#1e3a8a
+  classDef security fill:#fef3c7,stroke:#b45309,stroke-width:1.5px,color:#78350f
+  classDef external fill:#f8fafc,stroke:#64748b,stroke-width:1.5px,color:#0f172a,stroke-dasharray:6 4

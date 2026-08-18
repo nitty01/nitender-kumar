@@ -2,7 +2,18 @@
 
 import { useEffect, useId, useRef } from "react";
 
-function loadMermaid() {
+declare global {
+  interface Window {
+    mermaid?: {
+      initialize: (config: Record<string, unknown>) => void;
+      render: (id: string, text: string) => Promise<{ svg: string }>;
+      registerLayout?: (layout: unknown) => void;
+      registerLayoutLoaders?: (layout: unknown) => void;
+    };
+  }
+}
+
+export function loadMermaid() {
   return new Promise<void>((resolve, reject) => {
     if (window.mermaid) {
       resolve();
@@ -24,35 +35,43 @@ function loadMermaid() {
   });
 }
 
+export async function renderMermaidSvg(chart: string, renderId: string, forExport = false) {
+  await loadMermaid();
+  if (!window.mermaid) throw new Error("Mermaid failed to load");
+  window.mermaid.initialize({
+    startOnLoad: false,
+    theme: "neutral",
+    securityLevel: "strict",
+    flowchart: { htmlLabels: false, useMaxWidth: !forExport },
+  });
+  const { svg } = await window.mermaid.render(renderId.replace(/[^a-zA-Z0-9]/g, ""), chart);
+  return svg;
+}
+
 export function MermaidDiagram({ chart }: { chart: string }) {
   const hostRef = useRef<HTMLDivElement>(null);
+  const lastGood = useRef("");
   const reactId = useId().replace(/:/g, "");
 
   useEffect(() => {
     let cancelled = false;
-    async function run() {
-      await loadMermaid();
-      if (cancelled || !window.mermaid || !hostRef.current) return;
-      window.mermaid.initialize({
-        startOnLoad: false,
-        theme: "neutral",
-        securityLevel: "strict",
-        flowchart: { htmlLabels: false, useMaxWidth: true },
+    const timer = window.setTimeout(() => {
+      void (async () => {
+        const svg = await renderMermaidSvg(chart, `blog-mmd-${reactId}-${Date.now()}`);
+        if (!cancelled && hostRef.current) {
+          lastGood.current = svg;
+          hostRef.current.innerHTML = svg;
+        }
+      })().catch(() => {
+        if (!cancelled && hostRef.current && !lastGood.current) {
+          hostRef.current.textContent = "Diagram failed to render. Check Mermaid syntax.";
+        }
       });
-      const id = `blog-mmd-${reactId}-${Date.now()}`;
-      const { svg } = await window.mermaid.render(id, chart);
-      if (!cancelled && hostRef.current) {
-        hostRef.current.innerHTML = svg;
-      }
-    }
-    void run().catch((error) => {
-      if (hostRef.current) {
-        hostRef.current.textContent = "Diagram failed to render.";
-      }
-      console.error(error);
-    });
+    }, 280);
+
     return () => {
       cancelled = true;
+      window.clearTimeout(timer);
     };
   }, [chart, reactId]);
 

@@ -37,13 +37,12 @@
   fill: #e2e8f0 !important;
 }
 
-/* Default node shapes - slate fills (theme may still set per-node classDef) */
+/* Default node shapes - classDef fills/strokes must remain visible */
 .mermaid .node rect,
 .mermaid .node circle,
 .mermaid .node ellipse,
 .mermaid .node polygon {
-  stroke-width: 1px !important;
-  stroke: rgba(148, 163, 184, 0.55) !important;
+  stroke-width: 1.5px;
 }
 
 /* Edge label text - keep readable without overriding classDef on nodes */
@@ -175,27 +174,24 @@ body.diagram-canvas-open .site-nav {
   background: transparent !important;
 }
 
+.diagram-container .mermaid .cluster rect,
 .diagram-canvas .mermaid .cluster rect {
-  fill: #ffffff !important;
-  stroke: #64748b !important;
+  fill: #f8fafc !important;
+  fill-opacity: 0.55 !important;
+  stroke: #94a3b8 !important;
   stroke-width: 1.25px !important;
+  stroke-dasharray: 8 6;
 }
 
-.diagram-canvas .mermaid .cluster text,
-.diagram-canvas .mermaid .nodeLabel,
-.diagram-canvas .mermaid .label,
-.diagram-canvas .mermaid text {
-  fill: #0f172a !important;
-  color: #0f172a !important;
+.diagram-canvas .mermaid .cluster text {
+  fill: #475569 !important;
 }
 
 .diagram-canvas .mermaid .node rect,
 .diagram-canvas .mermaid .node circle,
 .diagram-canvas .mermaid .node ellipse,
 .diagram-canvas .mermaid .node polygon {
-  fill: #ffffff !important;
-  stroke: #334155 !important;
-  stroke-width: 1.25px !important;
+  stroke-width: 1.5px !important;
 }
 
 .diagram-canvas .mermaid .edgePath .path,
@@ -215,15 +211,48 @@ body.diagram-canvas-open .site-nav {
   stroke: #94a3b8 !important;
 }
 
+.diagram-canvas .mermaid .edgeLabel text {
+  fill: #0f172a !important;
+}
+
 .diagram-canvas .mermaid foreignObject,
 .diagram-canvas .mermaid foreignObject div,
 .diagram-canvas .mermaid foreignObject span {
   color: #0f172a !important;
 }
 
+.diagram-container--drawio {
+  min-height: 36rem;
+}
+
+.project-drawio {
+  display: block;
+  width: 100%;
+  min-height: 36rem;
+  height: 36rem;
+  border: 0;
+  background: #fafafa;
+}
+
+.diagram-canvas.is-fullscreen .project-drawio {
+  min-height: 100vh;
+  height: 100vh;
+}
+
 .diagram-zoom {
   transform-origin: 0 0;
   display: inline-block;
+}
+
+.diagram-container--drawio .diagram-zoom {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.diagram-container--drawio .project-drawio {
+  height: 100%;
+  min-height: 100%;
 }
 
 .diagram-toggle {

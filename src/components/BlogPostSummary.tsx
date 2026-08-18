@@ -1,13 +1,19 @@
 import Link from "next/link";
 import type { BlogPost } from "@/content/blog-posts";
 
-export function BlogPostSummary({ post }: { post: BlogPost }) {
+export function BlogPostSummary({
+  post,
+  compact = false,
+}: {
+  post: BlogPost;
+  compact?: boolean;
+}) {
   return (
-    <article className="blog-card">
+    <article className={compact ? "blog-card blog-card-compact" : "blog-card"}>
       {post.date ? <p className="blog-card-date">{post.date}</p> : null}
-      <h2>
+      <h3>
         <Link href={`/blog/${post.slug}`}>{post.title}</Link>
-      </h2>
+      </h3>
       {post.excerpt ? <p className="blog-card-excerpt">{post.excerpt}</p> : null}
       {post.topics.length > 0 ? (
         <ul className="blog-topics">

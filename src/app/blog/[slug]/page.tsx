@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { BlogContent } from "@/components/BlogContent";
+import { BlogArticle } from "@/components/BlogArticle";
+import { blocksToPlaintext } from "@/lib/blog-blocks";
 import { getPost, getPosts } from "@/lib/blog";
 import { requirePublicPage } from "@/lib/public-pages";
 
@@ -37,22 +38,20 @@ export default async function BlogPostPage({
   if (!post) notFound();
 
   return (
-    <main className="blog-index blog-post">
-      <p className="text-sm">
-        <Link href="/blog">← Blog</Link>
+    <main className="blog-portal blog-portal-article">
+      <p className="blog-back">
+        <Link href="/blog">← The ledger</Link>
       </p>
-      {post.date ? <p className="blog-card-date">{post.date}</p> : null}
-      <h1>{post.title}</h1>
-      {post.topics.length > 0 ? (
-        <ul className="blog-topics">
-          {post.topics.map((topic) => (
-            <li key={topic}>
-              <Link href={`/blog/all?topic=${encodeURIComponent(topic)}`}>{topic}</Link>
-            </li>
-          ))}
-        </ul>
-      ) : null}
-      <BlogContent body={post.body} />
+      <BlogArticle
+        title={post.title}
+        excerpt={post.excerpt}
+        date={post.date}
+        topics={post.topics}
+        heroUrl={post.heroUrl}
+        layout={post.layout}
+        blocks={post.blocks}
+        bodyText={post.body || blocksToPlaintext(post.blocks)}
+      />
     </main>
   );
 }

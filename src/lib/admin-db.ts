@@ -1,5 +1,6 @@
 import { Client } from "pg";
 import type { AdminPost, SiteMode } from "@/lib/admin-data";
+import { resolveBlocks } from "@/lib/blog-blocks";
 
 function dbConfig() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -46,6 +47,9 @@ function mapPost(row: Record<string, unknown>): AdminPost {
     title: String(row.title),
     excerpt: (row.excerpt as string | null) ?? null,
     body: String(row.body ?? ""),
+    blocks: resolveBlocks(row.blocks, String(row.body ?? "")),
+    heroUrl: typeof row.hero_url === "string" && row.hero_url ? row.hero_url : null,
+    layout: row.layout === "newspaper" ? "newspaper" : "flow",
     topics: Array.isArray(row.topics)
       ? row.topics.filter((item): item is string => typeof item === "string")
       : [],
@@ -59,7 +63,7 @@ function mapPost(row: Record<string, unknown>): AdminPost {
 export async function dbListPosts(): Promise<AdminPost[]> {
   return withDb(async (client) => {
     const { rows } = await client.query(
-      `select id, slug, title, excerpt, body, topics, published, archived, published_at, updated_at
+      `select id, slug, title, excerpt, body, blocks, hero_url, topics, published, archived, published_at, updated_at
        from public.posts
        order by updated_at desc`,
     );
@@ -70,7 +74,7 @@ export async function dbListPosts(): Promise<AdminPost[]> {
 export async function dbGetPost(id: string): Promise<AdminPost | null> {
   return withDb(async (client) => {
     const { rows } = await client.query(
-      `select id, slug, title, excerpt, body, topics, published, archived, published_at, updated_at
+      `select id, slug, title, excerpt, body, blocks, hero_url, topics, published, archived, published_at, updated_at
        from public.posts where id = $1`,
       [id],
     );
@@ -84,6 +88,8 @@ export async function dbUpsertPost(input: {
   title: string;
   excerpt: string;
   body: string;
+  blocks: unknown;
+  heroUrl: string | null;
   topics: string[];
   published: boolean;
   archived: boolean;
@@ -92,18 +98,21 @@ export async function dbUpsertPost(input: {
     if (input.id) {
       const { rows } = await client.query<{ id: string }>(
         `update public.posts
-         set slug=$1, title=$2, excerpt=$3, body=$4, topics=$5::text[], published=$6, archived=$7,
+         set slug=$1, title=$2, excerpt=$3, body=$4, blocks=$5::jsonb, hero_url=$6,
+             topics=$7::text[], published=$8, archived=$9,
              published_at = case
-               when $6 and not published then now()
+               when $8 and not published then now()
                else published_at
              end
-         where id=$8
+         where id=$10
          returning id`,
         [
           input.slug.trim(),
           input.title.trim(),
           input.excerpt.trim() || null,
           input.body,
+          JSON.stringify(input.blocks ?? []),
+          input.heroUrl?.trim() || null,
           input.topics,
           input.published,
           input.archived,
@@ -113,14 +122,16 @@ export async function dbUpsertPost(input: {
       return rows[0].id;
     }
     const { rows } = await client.query<{ id: string }>(
-      `insert into public.posts (slug, title, excerpt, body, topics, published, archived, published_at)
-       values ($1,$2,$3,$4,$5::text[],$6,$7, case when $6 then now() else null end)
+      `insert into public.posts (slug, title, excerpt, body, blocks, hero_url, topics, published, archived, published_at)
+       values ($1,$2,$3,$4,$5::jsonb,$6,$7::text[],$8,$9, case when $8 then now() else null end)
        returning id`,
       [
         input.slug.trim(),
         input.title.trim(),
         input.excerpt.trim() || null,
         input.body,
+        JSON.stringify(input.blocks ?? []),
+        input.heroUrl?.trim() || null,
         input.topics,
         input.published,
         input.archived,

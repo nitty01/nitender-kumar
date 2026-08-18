@@ -15,37 +15,58 @@ export const metadata: Metadata = {
 export default async function BlogPage() {
   await requirePublicPage("showBlog");
   const [recent, all] = await Promise.all([getRecentPosts(), getPosts()]);
+  const [lead, ...rest] = recent;
 
   return (
-    <main className="blog-index">
-      <p className="blog-kicker">Blog</p>
-      <h1>Writing on platform, data, and AI</h1>
-      <p className="blog-lede">
-        Essays on engineering organizations and production platforms. The latest {RECENT_POST_LIMIT}{" "}
-        published posts are here; the full archive is searchable by topic.
-      </p>
+    <main className="blog-portal">
+      <header className="blog-masthead">
+        <p className="blog-kicker">The ledger</p>
+        <h1>Platform, data, and AI</h1>
+        <p className="blog-lede">
+          Essays on production systems and engineering organizations. Latest {RECENT_POST_LIMIT}{" "}
+          published pieces; the archive is searchable by topic.
+        </p>
+      </header>
       {!isSupabaseConfigured() ? (
         <p className="blog-empty">
-          Supabase is not connected yet. Add NEXT_PUBLIC_SUPABASE_URL and
-          NEXT_PUBLIC_SUPABASE_ANON_KEY (or NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY), then run the
-          blog schema.
+          Supabase is not connected yet. Add NEXT_PUBLIC_SUPABASE_URL and a publishable key.
         </p>
       ) : null}
       {recent.length === 0 ? <p className="blog-empty">No published posts yet.</p> : null}
-      <ul className="blog-list">
-        {recent.map((post) => (
-          <li key={post.slug}>
-            <BlogPostSummary post={post} />
-          </li>
-        ))}
-      </ul>
-      {all.length > RECENT_POST_LIMIT ? (
+      {lead ? (
+        <section className="blog-lead" aria-label="Lead story">
+          <Link href={`/blog/${lead.slug}`} className="blog-lead-link">
+            {lead.heroUrl ? (
+              <img className="blog-lead-hero" src={lead.heroUrl} alt="" />
+            ) : null}
+            <div>
+              {lead.topics[0] ? <p className="blog-kicker">{lead.topics[0]}</p> : null}
+              {lead.date ? <p className="blog-card-date">{lead.date}</p> : null}
+              <h2>{lead.title}</h2>
+              {lead.excerpt ? <p className="blog-dek">{lead.excerpt}</p> : null}
+            </div>
+          </Link>
+        </section>
+      ) : null}
+      {rest.length > 0 ? (
+        <section aria-label="More stories">
+          <h2 className="blog-rail-title">More from the desk</h2>
+          <ul className="blog-rail">
+            {rest.map((post) => (
+              <li key={post.slug}>
+                <BlogPostSummary post={post} compact />
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
+      {all.length > 0 ? (
         <p className="blog-more">
-          <Link href="/blog/all">View all {all.length} posts and search by topic</Link>
-        </p>
-      ) : all.length > 0 ? (
-        <p className="blog-more">
-          <Link href="/blog/all">Browse all posts</Link>
+          <Link href="/blog/all">
+            {all.length > RECENT_POST_LIMIT
+              ? `View all ${all.length} posts and search by topic`
+              : "Browse all posts"}
+          </Link>
         </p>
       ) : null}
     </main>

@@ -35,6 +35,8 @@ import {
   recordSecurityEvent,
 } from "@/lib/admin-rate-limit";
 import { parseTopics } from "@/lib/blog";
+import { blocksToMarkdown, blocksToPlaintext, isArticleLayout, normalizeBlocks } from "@/lib/blog-blocks";
+import { blogMediaContext, blogMediaTags, sanitizeMediaToken, type MediaKind } from "@/lib/blog-media";
 
 function isNextControlFlow(error: unknown) {
   if (!error || typeof error !== "object" || !("digest" in error)) return false;
@@ -139,43 +141,221 @@ export async function uploadMediaAction(formData: FormData) {
   if (!(file instanceof File) || file.size === 0) {
     return { ok: false as const, error: "Choose a file to upload." };
   }
+  const kindRaw = String(formData.get("kind") ?? "image");
+  const kind: MediaKind =
+    kindRaw === "mermaid" || kindRaw === "drawio" || kindRaw === "diagram" ? kindRaw : "image";
+  const slug = sanitizeMediaToken(String(formData.get("slug") ?? "")) || "draft";
+  const topics = parseTopics(String(formData.get("topics") ?? ""));
+  const hash = sanitizeMediaToken(String(formData.get("hash") ?? ""));
   try {
     const { uploadToCloudinary } = await import("@/lib/cloudinary");
-    const uploaded = await uploadToCloudinary(file);
+    const uploaded = await uploadToCloudinary(file, {
+      tags: blogMediaTags(kind, slug, topics),
+      context: blogMediaContext(kind, slug, file.name),
+      publicId: hash ? `blog-${slug}-${kind}-${hash}` : undefined,
+    });
     return {
       ok: true as const,
       url: uploaded.url,
       resourceType: uploaded.resourceType,
       publicId: uploaded.publicId,
+      tags: uploaded.tags,
     };
+  } catch (error) {
+    return {
+      ok: false as const,
+      error: error instanceof Error ? error.message : "Upload failed.",
+    };
+  }
+}
+
+export async function searchMediaAction(query = "", tag = "") {
+  await requireAdminSession();
+  try {
+    const { searchCloudinaryMedia } = await import("@/lib/cloudinary");
+    const items = await searchCloudinaryMedia(query.slice(0, 80), tag.slice(0, 64));
+    return { ok: true as const, items };
+  } catch (error) {
+    return {
+      ok: false as const,
+      error: error instanceof Error ? error.message : "Catalogue search failed.",
+      items: [],
+    };
+  }
+}
+
+export async function tagMediaAction(publicId: string, slug: string, topics: string[] = []) {
+  await requireAdminSession();
+  const id = publicId.trim();
+  if (!id) return { ok: false as const, error: "Missing media id." };
+  try {
+    const { addCloudinaryTags } = await import("@/lib/cloudinary");
+    await addCloudinaryTags(id, blogMediaTags("image", slug, topics));
+    return { ok: true as const };
+  } catch (error) {
+    return {
+      ok: false as const,
+      error: error instanceof Error ? error.message : "Could not tag media.",
+    };
+  }
+}
+
+export async function exportDrawioPngAction(input: {
+  source: string;
+  format: "xml" | "url";
+  slug: string;
+  topics: string[];
+  hash: string;
+}) {
+  await requireAdminSession();
+  const source = input.source.trim();
+  if (!source) return { ok: false as const, error: "Draw.io source is empty." };
+  try {
+    const {
+      exportDrawioPng,
+      isCloudinaryUrl,
+      optimizeCloudinaryUrl,
+      uploadBufferToCloudinary,
+    } = await import("@/lib/cloudinary");
+    if (input.format === "url" && /\.(png|jpe?g|webp|gif|svg)(\?|$)/i.test(source)) {
+      return {
+        ok: true as const,
+        url: isCloudinaryUrl(source) ? optimizeCloudinaryUrl(source) : source,
+        publicId: "",
+      };
+    }
+    let xml = source;
+    if (input.format === "url") {
+      let allowed = false;
+      try {
+        const parsed = new URL(source);
+        allowed =
+          parsed.protocol === "https:" &&
+          (parsed.hostname.endsWith("res.cloudinary.com") ||
+            parsed.hostname.endsWith("diagrams.net") ||
+            parsed.hostname.endsWith("draw.io"));
+      } catch {
+        allowed = false;
+      }
+      if (!allowed) throw new Error("Draw.io URL is not allowed");
+      const res = await fetch(source, { cache: "no-store", signal: AbortSignal.timeout(15000) });
+      if (!res.ok) throw new Error("Could not fetch Draw.io source");
+      xml = await res.text();
+    }
+    const png = await exportDrawioPng(xml);
+    const slug = sanitizeMediaToken(input.slug) || "draft";
+    const hash = sanitizeMediaToken(input.hash) || "diagram";
+    const uploaded = await uploadBufferToCloudinary(png, `drawio-${hash}.png`, {
+      tags: blogMediaTags("drawio", slug, input.topics),
+      context: blogMediaContext("drawio", slug, "drawio diagram"),
+      publicId: `blog-${slug}-drawio-${hash}`,
+    });
+    return { ok: true as const, url: uploaded.url, publicId: uploaded.publicId };
+  } catch (error) {
+    return {
+      ok: false as const,
+      error: error instanceof Error ? error.message : "Draw.io PNG export failed.",
+    };
+  }
+}
+
+function parseBlocksField(raw: string) {
+  try {
+    return normalizeBlocks(JSON.parse(raw || "[]"));
   } catch {
-    return { ok: false as const, error: "Upload failed." };
+    return [];
+  }
+}
+
+function fallbackSlug(title: string, existing?: string) {
+  const fromTitle =
+    existing?.trim() ||
+    title
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-|-$/g, "");
+  const slug = fromTitle.slice(0, 80);
+  if (!slug || slug === "all") return `draft-${Date.now().toString(36)}`;
+  return slug;
+}
+
+export async function persistPostAction(input: {
+  id?: string;
+  slug: string;
+  title: string;
+  excerpt: string;
+  blocks: unknown;
+  heroUrl: string | null;
+  layout: string;
+  topics: string[];
+  published?: boolean;
+}) {
+  await requireAdminSession();
+  const blocks = normalizeBlocks(input.blocks);
+  const title = input.title.trim() || "Untitled draft";
+  let slug = fallbackSlug(title, input.slug);
+  if (slug === "all") slug = "all-posts";
+  try {
+    const existing = input.id ? await sbGet(input.id) : null;
+    const published =
+      typeof input.published === "boolean" ? input.published : Boolean(existing?.published);
+    const payload = {
+      id: input.id,
+      slug,
+      title,
+      excerpt: input.excerpt,
+      body: blocksToPlaintext(blocks) || blocksToMarkdown(blocks),
+      blocks: blocks.length ? blocks : normalizeBlocks([{ type: "paragraph", text: "" }]),
+      heroUrl: input.heroUrl,
+      layout: isArticleLayout(input.layout) ? input.layout : "flow",
+      topics: input.topics,
+      published,
+      archived: false,
+    };
+    let savedId: string;
+    try {
+      savedId = await sbUpsert(payload);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "";
+      if (!/duplicate|unique/i.test(message)) throw error;
+      payload.slug = `${slug}-${Date.now().toString(36).slice(-4)}`.slice(0, 80);
+      slug = payload.slug;
+      savedId = await sbUpsert(payload);
+    }
+    if (published) revalidatePath("/", "layout");
+    revalidatePath("/admin/blog");
+    return {
+      ok: true as const,
+      id: savedId,
+      slug,
+      title,
+      published,
+      savedAt: new Date().toISOString(),
+    };
+  } catch (error) {
+    return {
+      ok: false as const,
+      error: error instanceof Error ? error.message : "Could not save draft.",
+    };
   }
 }
 
 export async function savePostAction(formData: FormData) {
-  await requireAdminSession();
-  const id = String(formData.get("id") ?? "") || undefined;
   const intent = String(formData.get("intent") ?? "draft");
   const published = intent === "publish" || intent === "save";
-  let slug = String(formData.get("slug") ?? "");
-  if (slug === "all") slug = "all-posts";
-  const payload = {
-    id,
-    slug,
+  const result = await persistPostAction({
+    id: String(formData.get("id") ?? "") || undefined,
+    slug: String(formData.get("slug") ?? ""),
     title: String(formData.get("title") ?? ""),
     excerpt: String(formData.get("excerpt") ?? ""),
-    body: String(formData.get("body") ?? ""),
+    blocks: parseBlocksField(String(formData.get("blocks") ?? "[]")),
+    heroUrl: String(formData.get("hero_url") ?? "").trim() || null,
+    layout: String(formData.get("layout") ?? "flow"),
     topics: parseTopics(String(formData.get("topics") ?? "")),
     published,
-    archived: false,
-  };
-  if (!payload.slug || !payload.title || !payload.body) {
-    throw new Error("Title, slug, and body are required");
-  }
-  const savedId = await sbUpsert(payload);
-  revalidatePath("/", "layout");
-  redirect(`/admin/blog/${savedId}?saved=${published ? "published" : "draft"}`);
+  });
+  if (!result.ok) throw new Error(result.error);
+  redirect(`/admin/blog/${result.id}?saved=${result.published ? "published" : "draft"}`);
 }
 
 export async function deletePostAction(formData: FormData) {

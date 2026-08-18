@@ -1,38 +1,41 @@
 ---
 config:
   flowchart:
-    nodeSpacing: 28
-    rankSpacing: 36
-    diagramPadding: 8
+    nodeSpacing: 48
+    rankSpacing: 64
+    diagramPadding: 16
+    htmlLabels: false
+    curve: linear
   layout: dagre
 ---
 flowchart LR
-    A["🚗 OBD-II Data"] --> B["📥 Ingestion Service<br>RabbitMQ"]
-    C["📊 Google Ads / Analytics / Salesforce"] --> B
-    B --> D["⚙️ Processing<br>Python + FastAPI"]
-    D --> E[("💾 MongoDB<br>Raw Data Store")] & F[("🗄️ PostgreSQL<br>Job & Metadata")] & G["📊 Analytics Engine"]
-    G --> H["📈 Insights Dashboard"] & I["🤖 AI / LLM Integration"]
-    H --> J["👥 End Users"]
-    I --> J
-    K["🐳 Containerized Services<br>Docker + Kubernetes"] --> D
-    L["☁️ AWS Cloud"] --> K
-     A:::source
-     B:::ingestion
-     C:::source
-     D:::processing
-     E:::storage
-     F:::storage
-     G:::analytics
-     H:::output
-     I:::output
-     J:::output
-     K:::infra
-     L:::infra
-    classDef source fill:#BBDEFB,stroke:#1565C0,stroke-width:2px,color:#0D1B2A
-    classDef ingestion fill:#B2DFDB,stroke:#00695C,stroke-width:2px,color:#00332E
-    classDef processing fill:#D1C4E9,stroke:#4527A0,stroke-width:2px,color:#1A093F
-    classDef storage fill:#FFE0B2,stroke:#EF6C00,stroke-width:2px,color:#4A2500
-    classDef analytics fill:#C8E6C9,stroke:#2E7D32,stroke-width:2px,color:#0B2E13
-    classDef output fill:#F8BBD0,stroke:#AD1457,stroke-width:2px,color:#4A0E2E
-    classDef infra fill:#E1BEE7,stroke:#6A1B9A,stroke-width:2px,color:#2D0A3A
-
+  FLEET["500K+ vehicles"]
+  MKT["Ads / Salesforce"]
+  subgraph EDGE["Control plane"]
+    IAM["IAM + KMS"]
+  end
+  subgraph VPC["AWS VPC"]
+    KIN["Kinesis ingest"]
+    GLUE["Glue Streaming"]
+    ICE[("Iceberg on S3")]
+    RS[("Redshift private")]
+    SM["SageMaker MLOps"]
+  end
+  DASH["Self-service analytics"]
+  FLEET --> KIN
+  MKT --> KIN
+  KIN --> GLUE
+  GLUE --> ICE
+  ICE --> RS
+  ICE --> SM
+  RS --> DASH
+  SM --> DASH
+  IAM -.-> GLUE
+  class FLEET,MKT external
+  class KIN,GLUE,SM,DASH compute
+  class ICE,RS data
+  class IAM security
+  classDef compute fill:#ccfbf1,stroke:#0f766e,stroke-width:1.5px,color:#042f2e
+  classDef data fill:#dbeafe,stroke:#1d4ed8,stroke-width:1.5px,color:#1e3a8a
+  classDef security fill:#fef3c7,stroke:#b45309,stroke-width:1.5px,color:#78350f
+  classDef external fill:#f8fafc,stroke:#64748b,stroke-width:1.5px,color:#0f172a,stroke-dasharray:6 4

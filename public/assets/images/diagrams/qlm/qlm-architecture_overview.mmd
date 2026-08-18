@@ -1,32 +1,37 @@
 ---
 config:
   flowchart:
-    nodeSpacing: 28
-    rankSpacing: 36
-    diagramPadding: 8
+    nodeSpacing: 48
+    rankSpacing: 64
+    diagramPadding: 16
+    htmlLabels: false
+    curve: linear
   layout: dagre
 ---
 flowchart LR
-    A["📹 Live Video Feeds"] --> B["🤖 Computer Vision<br>OpenCV + TensorFlow"]
-    B --> C["⚙️ Queue Detection<br>People Counting Algorithm"]
-    C --> D[("💾 PostgreSQL")] & E["🚨 Alert System<br>Threshold Management"]
-    D --> F["📊 Analytics Dashboard"]
-    E --> G["👥 Supervisor Notifications"]
-    H["🐳 Docker + Kubernetes"] --> B
-    I["☁️ AWS Cloud"] --> H
-     A:::source
-     B:::processing
-     C:::processing
-     D:::storage
-     E:::alerting
-     F:::output
-     G:::output
-     H:::infra
-     I:::infra
-    classDef source fill:#BBDEFB,stroke:#1565C0,stroke-width:2px,color:#0D1B2A
-    classDef processing fill:#B2DFDB,stroke:#00695C,stroke-width:2px,color:#00332E
-    classDef storage fill:#FFE0B2,stroke:#EF6C00,stroke-width:2px,color:#4A2500
-    classDef alerting fill:#FFCDD2,stroke:#D32F2F,stroke-width:2px,color:#B71C1C
-    classDef output fill:#C8E6C9,stroke:#2E7D32,stroke-width:2px,color:#0B2E13
-    classDef infra fill:#E1BEE7,stroke:#6A1B9A,stroke-width:2px,color:#2D0A3A
-
+  CAM["Live video feeds"]
+  subgraph EDGE["Public edge"]
+    WAF["ALB + WAF"]
+    IAM["IAM + KMS"]
+  end
+  subgraph VPC["AWS VPC"]
+    CV["OpenCV + TensorFlow"]
+    Q["Queue length"]
+    PG[("PostgreSQL")]
+    DASH["Supervisor dashboard"]
+  end
+  CAM --> WAF
+  WAF --> CV
+  CV --> Q
+  Q --> PG
+  Q --> DASH
+  PG --> DASH
+  IAM -.-> CV
+  class CAM external
+  class CV,Q,DASH compute
+  class PG data
+  class WAF,IAM security
+  classDef compute fill:#ccfbf1,stroke:#0f766e,stroke-width:1.5px,color:#042f2e
+  classDef data fill:#dbeafe,stroke:#1d4ed8,stroke-width:1.5px,color:#1e3a8a
+  classDef security fill:#fef3c7,stroke:#b45309,stroke-width:1.5px,color:#78350f
+  classDef external fill:#f8fafc,stroke:#64748b,stroke-width:1.5px,color:#0f172a,stroke-dasharray:6 4

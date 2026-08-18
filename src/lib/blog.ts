@@ -1,5 +1,6 @@
 import { LOCAL_POSTS, type BlogPost } from "@/content/blog-posts";
 import { createPublicSupabase } from "@/lib/admin-data";
+import { isArticleLayout, resolveBlocks } from "@/lib/blog-blocks";
 
 export const RECENT_POST_LIMIT = 5;
 
@@ -8,6 +9,9 @@ type RemotePost = {
   title: string;
   excerpt: string | null;
   body: string;
+  blocks?: unknown;
+  hero_url?: string | null;
+  layout?: string | null;
   topics?: string[] | null;
   published_at: string | null;
 };
@@ -40,6 +44,9 @@ function toPost(row: RemotePost): BlogPost {
     date: (row.published_at ?? "").slice(0, 10),
     topics: asTopics(row.topics),
     body: row.body,
+    blocks: resolveBlocks(row.blocks, row.body),
+    heroUrl: row.hero_url ?? null,
+    layout: isArticleLayout(row.layout) ? row.layout : "flow",
   };
 }
 
@@ -48,7 +55,7 @@ async function fetchSupabasePosts(): Promise<BlogPost[]> {
   if (!client) return [];
   const withTopics = await client
     .from("posts")
-    .select("slug,title,excerpt,body,topics,published_at")
+    .select("slug,title,excerpt,body,blocks,hero_url,layout,topics,published_at")
     .eq("published", true)
     .eq("archived", false)
     .order("published_at", { ascending: false });
@@ -112,7 +119,7 @@ export async function getPost(slug: string): Promise<BlogPost | undefined> {
   if (client) {
     const withTopics = await client
       .from("posts")
-      .select("slug,title,excerpt,body,topics,published_at")
+      .select("slug,title,excerpt,body,blocks,hero_url,layout,topics,published_at")
       .eq("slug", slug)
       .eq("published", true)
       .eq("archived", false)

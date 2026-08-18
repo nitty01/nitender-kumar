@@ -54,11 +54,23 @@ export function bindDiagramCanvas(container: HTMLElement): CanvasHandle {
       state.viewport.style.transformOrigin = "0 0";
     },
     fit() {
+      const drawio = container.querySelector<HTMLIFrameElement>("iframe.project-drawio");
       const svg = container.querySelector("svg");
       const sidePad = 24;
       const topPad = 48;
       const bottomPad = 28;
       const availWidth = Math.max(container.clientWidth - sidePad * 2, 120);
+      if (drawio) {
+        const targetH = container.classList.contains("is-fullscreen")
+          ? window.innerHeight
+          : Math.max(36 * 16, Math.round(window.innerHeight * 0.62));
+        container.style.height = `${targetH}px`;
+        state.scale = 1;
+        state.tx = 0;
+        state.ty = 0;
+        state.apply();
+        return;
+      }
       let box = {
         width: svg?.clientWidth || availWidth,
         height: svg?.clientHeight || 240,
@@ -130,7 +142,7 @@ function attachGestures(container: HTMLElement, state: CanvasState) {
 
   container.addEventListener("pointerdown", (event) => {
     const target = event.target as HTMLElement;
-    if (target.closest("button, a, .diagram-controls, .diagram-canvas__close")) return;
+    if (target.closest("button, a, .diagram-controls, .diagram-canvas__close, iframe.project-drawio")) return;
     dragging = true;
     lastX = event.clientX;
     lastY = event.clientY;

@@ -9,9 +9,10 @@ const CONTENT_SECURITY_POLICY = [
   "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://www.googletagmanager.com https://www.clarity.ms https://scripts.clarity.ms",
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com",
   "font-src 'self' data: https://fonts.gstatic.com https://cdnjs.cloudflare.com",
-  "img-src 'self' data: blob: https://res.cloudinary.com https://www.google-analytics.com https://www.googletagmanager.com",
+  "img-src 'self' data: blob: https://res.cloudinary.com https://embed.diagrams.net https://www.google-analytics.com https://www.googletagmanager.com",
   "media-src 'self' https://res.cloudinary.com",
-  "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://www.google-analytics.com https://www.googletagmanager.com https://*.google-analytics.com https://*.clarity.ms https://res.cloudinary.com",
+  "frame-src 'self' https://viewer.diagrams.net https://embed.diagrams.net",
+  "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://www.google-analytics.com https://www.googletagmanager.com https://*.google-analytics.com https://*.clarity.ms https://res.cloudinary.com https://cdn.jsdelivr.net https://embed.diagrams.net https://viewer.diagrams.net",
   "worker-src 'self' blob:",
   "upgrade-insecure-requests",
 ].join("; ");

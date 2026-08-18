@@ -23,13 +23,15 @@ export default async function BlogArchivePage({
   const results = filterPosts(posts, q, topic);
 
   return (
-    <main className="blog-index">
-      <p className="text-sm">
-        <Link href="/blog">← Latest posts</Link>
+    <main className="blog-portal">
+      <p className="blog-back">
+        <Link href="/blog">← Latest</Link>
       </p>
-      <p className="blog-kicker">Blog archive</p>
-      <h1>All posts</h1>
-      <p className="blog-lede">Search the full set of published posts by topic or keyword.</p>
+      <header className="blog-masthead">
+        <p className="blog-kicker">Archive</p>
+        <h1>All posts</h1>
+        <p className="blog-lede">Search the full set of published posts by topic or keyword.</p>
+      </header>
 
       <form className="blog-search" method="get" action="/blog/all" role="search">
         <label>
@@ -69,7 +71,7 @@ export default async function BlogArchivePage({
       </p>
 
       {results.length === 0 ? <p className="blog-empty">No posts match that search.</p> : null}
-      <ul className="blog-list">
+      <ul className="blog-rail blog-rail-archive">
         {results.map((post) => (
           <li key={post.slug}>
             <BlogPostSummary post={post} />

@@ -1,22 +1,18 @@
+import { parseMarkdownToBlocks, type ArticleLayout, type BlogBlock } from "@/lib/blog-blocks";
+
 export type BlogPost = {
   slug: string;
   title: string;
   excerpt: string;
   date: string;
   topics: string[];
-  /** Markdown body; may include ```mermaid fences */
   body: string;
+  blocks: BlogBlock[];
+  heroUrl: string | null;
+  layout: ArticleLayout;
 };
 
-export const LOCAL_POSTS: BlogPost[] = [
-  {
-    slug: "platforms-over-projects",
-    title: "Platforms over projects",
-    excerpt:
-      "Why reusable platform bets beat one-off delivery — and how that shows up in cost, risk, and team velocity.",
-    date: "2026-08-01",
-    topics: ["Platform", "Leadership"],
-    body: `The highest-leverage work in platform and data organizations is not another dashboard. It is leaving behind infrastructure that the next team can extend without a rewrite.
+const platformsBody = `The highest-leverage work in platform and data organizations is not another dashboard. It is leaving behind infrastructure that the next team can extend without a rewrite.
 
 That means contracts, tenancy, observability, and cost controls as first-class design, not cleanup after a demo works.
 
@@ -28,6 +24,19 @@ flowchart LR
   B --> C[Reusable services]
   C --> D[Measurable outcomes]
 \`\`\`
-`,
+`;
+
+export const LOCAL_POSTS: BlogPost[] = [
+  {
+    slug: "platforms-over-projects",
+    title: "Platforms over projects",
+    excerpt:
+      "Why reusable platform bets beat one-off delivery — and how that shows up in cost, risk, and team velocity.",
+    date: "2026-08-01",
+    topics: ["Platform", "Leadership"],
+    body: platformsBody,
+    blocks: parseMarkdownToBlocks(platformsBody),
+    heroUrl: null,
+    layout: "flow",
   },
 ];

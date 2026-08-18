@@ -1,0 +1,142 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="Deep View Analytics L2" id="page-1">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" page="1" pageWidth="1400" pageHeight="700" background="#FAFAFA">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="gSrc" value="Fleet edge" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=4;fillColor=#f8fafc;fillOpacity=40;strokeColor=#94a3b8;dashed=1;dashPattern=8 6;verticalAlign=top;align=left;spacingLeft=10;spacingTop=6;fontColor=#475569;fontFamily=Helvetica;fontSize=13;fontStyle=1;pointerEvents=0;connectable=0;" vertex="1" parent="1">
+          <mxGeometry x="20" y="40" width="190" height="220" as="geometry"/>
+        </mxCell>
+        <mxCell id="nVeh" value="500K+ vehicles&lt;br&gt;&lt;font style=&quot;font-size:10px&quot; color=&quot;#475569&quot;&gt;5TB+/day&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;spacing=16;spacingTop=12;spacingBottom=12;spacingLeft=16;spacingRight=16;align=center;verticalAlign=middle;fillColor=#f8fafc;strokeColor=#64748b;fontColor=#0f172a;fontFamily=Helvetica;fontSize=12;dashed=1;dashPattern=8 4;arcSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="40" y="80" width="150" height="56" as="geometry"/>
+        </mxCell>
+        <mxCell id="nMkt" value="Ads / Salesforce&lt;br&gt;&lt;font style=&quot;font-size:10px&quot; color=&quot;#475569&quot;&gt;context feeds&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;spacing=16;spacingTop=12;spacingBottom=12;spacingLeft=16;spacingRight=16;align=center;verticalAlign=middle;fillColor=#f8fafc;strokeColor=#64748b;fontColor=#0f172a;fontFamily=Helvetica;fontSize=12;dashed=1;dashPattern=8 4;arcSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="40" y="160" width="150" height="56" as="geometry"/>
+        </mxCell>
+        <mxCell id="gEdge" value="Control plane" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=4;fillColor=#f8fafc;fillOpacity=40;strokeColor=#94a3b8;dashed=1;dashPattern=8 6;verticalAlign=top;align=left;spacingLeft=10;spacingTop=6;fontColor=#475569;fontFamily=Helvetica;fontSize=13;fontStyle=1;pointerEvents=0;connectable=0;" vertex="1" parent="1">
+          <mxGeometry x="20" y="280" width="190" height="300" as="geometry"/>
+        </mxCell>
+        <mxCell id="nIam" value="IAM + KMS&lt;br&gt;&lt;font style=&quot;font-size:10px&quot; color=&quot;#475569&quot;&gt;least privilege&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;spacing=16;spacingTop=12;spacingBottom=12;spacingLeft=16;spacingRight=16;align=center;verticalAlign=middle;fillColor=#fef3c7;strokeColor=#b45309;fontColor=#78350f;fontFamily=Helvetica;fontSize=12;fontStyle=1;arcSize=8;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="40" y="324" width="150" height="56" as="geometry"/>
+        </mxCell>
+        <mxCell id="nWaf" value="WAF / Cognito&lt;br&gt;&lt;font style=&quot;font-size:10px&quot; color=&quot;#475569&quot;&gt;analyst access&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;spacing=16;spacingTop=12;spacingBottom=12;spacingLeft=16;spacingRight=16;align=center;verticalAlign=middle;fillColor=#fef3c7;strokeColor=#b45309;fontColor=#78350f;fontFamily=Helvetica;fontSize=12;fontStyle=1;arcSize=8;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="40" y="404" width="150" height="56" as="geometry"/>
+        </mxCell>
+        <mxCell id="nCost" value="FinOps gates&lt;br&gt;&lt;font style=&quot;font-size:10px&quot; color=&quot;#475569&quot;&gt;30% run-rate cut&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;spacing=16;spacingTop=12;spacingBottom=12;spacingLeft=16;spacingRight=16;align=center;verticalAlign=middle;fillColor=#fef3c7;strokeColor=#b45309;fontColor=#78350f;fontFamily=Helvetica;fontSize=12;fontStyle=1;arcSize=8;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="40" y="484" width="150" height="56" as="geometry"/>
+        </mxCell>
+        <mxCell id="gVpc" value="AWS VPC" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=6;fillColor=#e2e8f0;fillOpacity=28;strokeColor=#334155;strokeWidth=2;dashed=0;verticalAlign=top;align=left;spacingLeft=12;spacingTop=6;fontColor=#0f172a;fontFamily=Helvetica;fontSize=14;fontStyle=1;pointerEvents=0;connectable=0;" vertex="1" parent="1">
+          <mxGeometry x="230" y="40" width="1150" height="620" as="geometry"/>
+        </mxCell>
+        <mxCell id="gApp" value="Private app subnet + SG" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=4;fillColor=#f8fafc;fillOpacity=45;strokeColor=#64748b;strokeWidth=1.5;dashed=1;dashPattern=8 6;verticalAlign=top;align=left;spacingLeft=10;spacingTop=6;fontColor=#475569;fontFamily=Helvetica;fontSize=12;fontStyle=1;pointerEvents=0;connectable=0;" vertex="1" parent="1">
+          <mxGeometry x="250" y="76" width="1110" height="176" as="geometry"/>
+        </mxCell>
+        <mxCell id="nKin" value="Kinesis&lt;br&gt;&lt;font style=&quot;font-size:10px&quot; color=&quot;#475569&quot;&gt;event fabric&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;spacing=16;spacingTop=12;spacingBottom=12;spacingLeft=16;spacingRight=16;align=center;verticalAlign=middle;fillColor=#ccfbf1;strokeColor=#0f766e;fontColor=#042f2e;fontFamily=Helvetica;fontSize=12;fontStyle=1;arcSize=8;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="270" y="116" width="150" height="56" as="geometry"/>
+        </mxCell>
+        <mxCell id="nLam" value="Lambda&lt;br&gt;&lt;font style=&quot;font-size:10px&quot; color=&quot;#475569&quot;&gt;volatile ingest&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;spacing=16;spacingTop=12;spacingBottom=12;spacingLeft=16;spacingRight=16;align=center;verticalAlign=middle;fillColor=#ccfbf1;strokeColor=#0f766e;fontColor=#042f2e;fontFamily=Helvetica;fontSize=12;fontStyle=1;arcSize=8;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="440" y="116" width="150" height="56" as="geometry"/>
+        </mxCell>
+        <mxCell id="nBuf" value="Lookback buffer&lt;br&gt;&lt;font style=&quot;font-size:10px&quot; color=&quot;#475569&quot;&gt;exactly-once&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;spacing=16;spacingTop=12;spacingBottom=12;spacingLeft=16;spacingRight=16;align=center;verticalAlign=middle;fillColor=#fef3c7;strokeColor=#b45309;fontColor=#78350f;fontFamily=Helvetica;fontSize=12;fontStyle=1;arcSize=8;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="610" y="116" width="150" height="56" as="geometry"/>
+        </mxCell>
+        <mxCell id="nGlue" value="Glue Streaming&lt;br&gt;&lt;font style=&quot;font-size:10px&quot; color=&quot;#475569&quot;&gt;serverless ETL&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;spacing=16;spacingTop=12;spacingBottom=12;spacingLeft=16;spacingRight=16;align=center;verticalAlign=middle;fillColor=#ccfbf1;strokeColor=#0f766e;fontColor=#042f2e;fontFamily=Helvetica;fontSize=12;fontStyle=1;arcSize=8;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="780" y="116" width="150" height="56" as="geometry"/>
+        </mxCell>
+        <mxCell id="nSm" value="SageMaker&lt;br&gt;&lt;font style=&quot;font-size:10px&quot; color=&quot;#475569&quot;&gt;MLOps&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;spacing=16;spacingTop=12;spacingBottom=12;spacingLeft=16;spacingRight=16;align=center;verticalAlign=middle;fillColor=#ccfbf1;strokeColor=#0f766e;fontColor=#042f2e;fontFamily=Helvetica;fontSize=12;fontStyle=1;arcSize=8;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="950" y="116" width="150" height="56" as="geometry"/>
+        </mxCell>
+        <mxCell id="nDash" value="Self-service&lt;br&gt;&lt;font style=&quot;font-size:10px&quot; color=&quot;#475569&quot;&gt;governed BI&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;spacing=16;spacingTop=12;spacingBottom=12;spacingLeft=16;spacingRight=16;align=center;verticalAlign=middle;fillColor=#ccfbf1;strokeColor=#0f766e;fontColor=#042f2e;fontFamily=Helvetica;fontSize=12;fontStyle=1;arcSize=8;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="1120" y="116" width="150" height="56" as="geometry"/>
+        </mxCell>
+        <mxCell id="gData" value="Private data subnet + SG" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=4;fillColor=#f8fafc;fillOpacity=45;strokeColor=#64748b;strokeWidth=1.5;dashed=1;dashPattern=8 6;verticalAlign=top;align=left;spacingLeft=10;spacingTop=6;fontColor=#475569;fontFamily=Helvetica;fontSize=12;fontStyle=1;pointerEvents=0;connectable=0;" vertex="1" parent="1">
+          <mxGeometry x="250" y="272" width="1110" height="364" as="geometry"/>
+        </mxCell>
+        <mxCell id="nIce" value="Iceberg on S3&lt;br&gt;&lt;font style=&quot;font-size:10px&quot; color=&quot;#475569&quot;&gt;compaction&lt;/font&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=10;spacing=16;spacingTop=12;spacingBottom=12;spacingLeft=16;spacingRight=16;align=center;verticalAlign=middle;fillColor=#dbeafe;strokeColor=#1d4ed8;fontColor=#1e3a8a;fontFamily=Helvetica;fontSize=12;fontStyle=1;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="270" y="316" width="150" height="56" as="geometry"/>
+        </mxCell>
+        <mxCell id="nRs" value="Redshift Serverless&lt;br&gt;&lt;font style=&quot;font-size:10px&quot; color=&quot;#475569&quot;&gt;private only&lt;/font&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=10;spacing=16;spacingTop=12;spacingBottom=12;spacingLeft=16;spacingRight=16;align=center;verticalAlign=middle;fillColor=#dbeafe;strokeColor=#1d4ed8;fontColor=#1e3a8a;fontFamily=Helvetica;fontSize=12;fontStyle=1;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="440" y="316" width="150" height="56" as="geometry"/>
+        </mxCell>
+        <mxCell id="nDq" value="Quality gates&lt;br&gt;&lt;font style=&quot;font-size:10px&quot; color=&quot;#475569&quot;&gt;CI contracts&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;spacing=16;spacingTop=12;spacingBottom=12;spacingLeft=16;spacingRight=16;align=center;verticalAlign=middle;fillColor=#f1f5f9;strokeColor=#475569;fontColor=#0f172a;fontFamily=Helvetica;fontSize=12;fontStyle=1;arcSize=6;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="610" y="316" width="150" height="56" as="geometry"/>
+        </mxCell>
+        <mxCell id="nSg" value="Security groups&lt;br&gt;&lt;font style=&quot;font-size:10px&quot; color=&quot;#475569&quot;&gt;deny default&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;spacing=16;spacingTop=12;spacingBottom=12;spacingLeft=16;spacingRight=16;align=center;verticalAlign=middle;fillColor=#fef3c7;strokeColor=#b45309;fontColor=#78350f;fontFamily=Helvetica;fontSize=12;fontStyle=1;arcSize=8;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="780" y="316" width="150" height="56" as="geometry"/>
+        </mxCell>
+        <mxCell id="nEp" value="VPC endpoints&lt;br&gt;&lt;font style=&quot;font-size:10px&quot; color=&quot;#475569&quot;&gt;S3 / Glue / RS&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;spacing=16;spacingTop=12;spacingBottom=12;spacingLeft=16;spacingRight=16;align=center;verticalAlign=middle;fillColor=#fef3c7;strokeColor=#b45309;fontColor=#78350f;fontFamily=Helvetica;fontSize=11;fontStyle=1;arcSize=6;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="950" y="316" width="150" height="56" as="geometry"/>
+        </mxCell>
+        <mxCell id="nHealth" value="Vehicle health" style="rounded=1;whiteSpace=wrap;html=1;spacing=16;spacingTop=12;spacingBottom=12;spacingLeft=16;spacingRight=16;align=center;verticalAlign=middle;fillColor=#ccfbf1;strokeColor=#0f766e;fontColor=#042f2e;fontFamily=Helvetica;fontSize=12;fontStyle=1;arcSize=8;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="270" y="412" width="150" height="56" as="geometry"/>
+        </mxCell>
+        <mxCell id="nPred" value="Predictive maint." style="rounded=1;whiteSpace=wrap;html=1;spacing=16;spacingTop=12;spacingBottom=12;spacingLeft=16;spacingRight=16;align=center;verticalAlign=middle;fillColor=#ccfbf1;strokeColor=#0f766e;fontColor=#042f2e;fontFamily=Helvetica;fontSize=12;fontStyle=1;arcSize=8;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="440" y="412" width="150" height="56" as="geometry"/>
+        </mxCell>
+        <mxCell id="nEmi" value="Emissions / risk" style="rounded=1;whiteSpace=wrap;html=1;spacing=16;spacingTop=12;spacingBottom=12;spacingLeft=16;spacingRight=16;align=center;verticalAlign=middle;fillColor=#ccfbf1;strokeColor=#0f766e;fontColor=#042f2e;fontFamily=Helvetica;fontSize=12;fontStyle=1;arcSize=8;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="610" y="412" width="150" height="56" as="geometry"/>
+        </mxCell>
+        <mxCell id="nObs" value="Observability&lt;br&gt;&lt;font style=&quot;font-size:10px&quot; color=&quot;#475569&quot;&gt;5TB+/day quality&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;spacing=16;spacingTop=12;spacingBottom=12;spacingLeft=16;spacingRight=16;align=center;verticalAlign=middle;fillColor=#f1f5f9;strokeColor=#475569;fontColor=#0f172a;fontFamily=Helvetica;fontSize=12;fontStyle=1;arcSize=6;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="780" y="412" width="150" height="56" as="geometry"/>
+        </mxCell>
+        <mxCell id="eVehKin" value="" style="edgeStyle=orthogonalEdgeStyle;endArrow=classic;html=1;strokeColor=#334155;strokeWidth=1.5;rounded=1;orthogonalLoop=1;jumpStyle=arc;jumpSize=6;fontColor=#0f172a;fontSize=10;fontFamily=Helvetica;fontStyle=1;labelBackgroundColor=#FAFAFA;" edge="1" parent="1" source="nVeh" target="nKin">
+          <mxGeometry relative="1" as="geometry"></mxGeometry>
+        </mxCell>
+        <mxCell id="eMktKin" value="" style="edgeStyle=orthogonalEdgeStyle;endArrow=classic;html=1;strokeColor=#334155;strokeWidth=1.5;rounded=1;orthogonalLoop=1;jumpStyle=arc;jumpSize=6;fontColor=#0f172a;fontSize=10;fontFamily=Helvetica;fontStyle=1;labelBackgroundColor=#FAFAFA;" edge="1" parent="1" source="nMkt" target="nKin">
+          <mxGeometry relative="1" as="geometry"></mxGeometry>
+        </mxCell>
+        <mxCell id="eKinLam" value="" style="edgeStyle=orthogonalEdgeStyle;endArrow=classic;html=1;strokeColor=#334155;strokeWidth=1.5;rounded=1;orthogonalLoop=1;jumpStyle=arc;jumpSize=6;fontColor=#0f172a;fontSize=10;fontFamily=Helvetica;fontStyle=1;labelBackgroundColor=#FAFAFA;" edge="1" parent="1" source="nKin" target="nLam">
+          <mxGeometry relative="1" as="geometry"></mxGeometry>
+        </mxCell>
+        <mxCell id="eLamBuf" value="" style="edgeStyle=orthogonalEdgeStyle;endArrow=classic;html=1;strokeColor=#334155;strokeWidth=1.5;rounded=1;orthogonalLoop=1;jumpStyle=arc;jumpSize=6;fontColor=#0f172a;fontSize=10;fontFamily=Helvetica;fontStyle=1;labelBackgroundColor=#FAFAFA;" edge="1" parent="1" source="nLam" target="nBuf">
+          <mxGeometry relative="1" as="geometry"></mxGeometry>
+        </mxCell>
+        <mxCell id="eBufGlue" value="" style="edgeStyle=orthogonalEdgeStyle;endArrow=classic;html=1;strokeColor=#334155;strokeWidth=1.5;rounded=1;orthogonalLoop=1;jumpStyle=arc;jumpSize=6;fontColor=#0f172a;fontSize=10;fontFamily=Helvetica;fontStyle=1;labelBackgroundColor=#FAFAFA;" edge="1" parent="1" source="nBuf" target="nGlue">
+          <mxGeometry relative="1" as="geometry"></mxGeometry>
+        </mxCell>
+        <mxCell id="eGlueIce" value="" style="edgeStyle=orthogonalEdgeStyle;endArrow=classic;html=1;strokeColor=#334155;strokeWidth=1.5;rounded=1;orthogonalLoop=1;jumpStyle=arc;jumpSize=6;fontColor=#0f172a;fontSize=10;fontFamily=Helvetica;fontStyle=1;labelBackgroundColor=#FAFAFA;" edge="1" parent="1" source="nGlue" target="nIce">
+          <mxGeometry relative="1" as="geometry"></mxGeometry>
+        </mxCell>
+        <mxCell id="eIceRs" value="" style="edgeStyle=orthogonalEdgeStyle;endArrow=classic;html=1;strokeColor=#334155;strokeWidth=1.5;rounded=1;orthogonalLoop=1;jumpStyle=arc;jumpSize=6;fontColor=#0f172a;fontSize=10;fontFamily=Helvetica;fontStyle=1;labelBackgroundColor=#FAFAFA;" edge="1" parent="1" source="nIce" target="nRs">
+          <mxGeometry relative="1" as="geometry"></mxGeometry>
+        </mxCell>
+        <mxCell id="eIceSm" value="" style="edgeStyle=orthogonalEdgeStyle;endArrow=classic;html=1;strokeColor=#334155;strokeWidth=1.5;rounded=1;orthogonalLoop=1;jumpStyle=arc;jumpSize=6;fontColor=#0f172a;fontSize=10;fontFamily=Helvetica;fontStyle=1;labelBackgroundColor=#FAFAFA;" edge="1" parent="1" source="nIce" target="nSm">
+          <mxGeometry relative="1" as="geometry"></mxGeometry>
+        </mxCell>
+        <mxCell id="eRsDash" value="" style="edgeStyle=orthogonalEdgeStyle;endArrow=classic;html=1;strokeColor=#334155;strokeWidth=1.5;rounded=1;orthogonalLoop=1;jumpStyle=arc;jumpSize=6;fontColor=#0f172a;fontSize=10;fontFamily=Helvetica;fontStyle=1;labelBackgroundColor=#FAFAFA;" edge="1" parent="1" source="nRs" target="nDash">
+          <mxGeometry relative="1" as="geometry"></mxGeometry>
+        </mxCell>
+        <mxCell id="eRsHealth" value="" style="edgeStyle=orthogonalEdgeStyle;endArrow=classic;html=1;strokeColor=#334155;strokeWidth=1.5;rounded=1;orthogonalLoop=1;jumpStyle=arc;jumpSize=6;fontColor=#0f172a;fontSize=10;fontFamily=Helvetica;fontStyle=1;labelBackgroundColor=#FAFAFA;" edge="1" parent="1" source="nRs" target="nHealth">
+          <mxGeometry relative="1" as="geometry"></mxGeometry>
+        </mxCell>
+        <mxCell id="eSmPred" value="" style="edgeStyle=orthogonalEdgeStyle;endArrow=classic;html=1;strokeColor=#334155;strokeWidth=1.5;rounded=1;orthogonalLoop=1;jumpStyle=arc;jumpSize=6;fontColor=#0f172a;fontSize=10;fontFamily=Helvetica;fontStyle=1;labelBackgroundColor=#FAFAFA;" edge="1" parent="1" source="nSm" target="nPred">
+          <mxGeometry relative="1" as="geometry"></mxGeometry>
+        </mxCell>
+        <mxCell id="eSmEmi" value="" style="edgeStyle=orthogonalEdgeStyle;endArrow=classic;html=1;strokeColor=#334155;strokeWidth=1.5;rounded=1;orthogonalLoop=1;jumpStyle=arc;jumpSize=6;fontColor=#0f172a;fontSize=10;fontFamily=Helvetica;fontStyle=1;labelBackgroundColor=#FAFAFA;" edge="1" parent="1" source="nSm" target="nEmi">
+          <mxGeometry relative="1" as="geometry"></mxGeometry>
+        </mxCell>
+        <mxCell id="eDqGlue" value="contract" style="edgeStyle=orthogonalEdgeStyle;endArrow=classic;html=1;dashed=1;dashPattern=8 4;strokeColor=#334155;strokeWidth=1.5;rounded=1;jumpStyle=arc;jumpSize=6;fontColor=#0f172a;fontSize=10;fontFamily=Helvetica;fontStyle=1;labelBackgroundColor=#FAFAFA;" edge="1" parent="1" source="nDq" target="nGlue">
+          <mxGeometry relative="1" as="geometry"></mxGeometry>
+        </mxCell>
+        <mxCell id="eIamGlue" value="role" style="edgeStyle=orthogonalEdgeStyle;endArrow=classic;html=1;dashed=1;dashPattern=8 4;strokeColor=#334155;strokeWidth=1.5;rounded=1;jumpStyle=arc;jumpSize=6;fontColor=#0f172a;fontSize=10;fontFamily=Helvetica;fontStyle=1;labelBackgroundColor=#FAFAFA;" edge="1" parent="1" source="nIam" target="nGlue">
+          <mxGeometry relative="1" as="geometry"></mxGeometry>
+        </mxCell>
+        <mxCell id="eWafDash" value="" style="edgeStyle=orthogonalEdgeStyle;endArrow=classic;html=1;strokeColor=#334155;strokeWidth=1.5;rounded=1;orthogonalLoop=1;jumpStyle=arc;jumpSize=6;fontColor=#0f172a;fontSize=10;fontFamily=Helvetica;fontStyle=1;labelBackgroundColor=#FAFAFA;" edge="1" parent="1" source="nWaf" target="nDash">
+          <mxGeometry relative="1" as="geometry"></mxGeometry>
+        </mxCell>
+        <mxCell id="eCostIce" value="tiering" style="edgeStyle=orthogonalEdgeStyle;endArrow=classic;html=1;dashed=1;dashPattern=8 4;strokeColor=#334155;strokeWidth=1.5;rounded=1;jumpStyle=arc;jumpSize=6;fontColor=#0f172a;fontSize=10;fontFamily=Helvetica;fontStyle=1;labelBackgroundColor=#FAFAFA;" edge="1" parent="1" source="nCost" target="nIce">
+          <mxGeometry relative="1" as="geometry"></mxGeometry>
+        </mxCell>
+        <mxCell id="eSgRs" value="" style="edgeStyle=orthogonalEdgeStyle;endArrow=classic;html=1;dashed=1;dashPattern=8 4;strokeColor=#334155;strokeWidth=1.5;rounded=1;jumpStyle=arc;jumpSize=6;fontColor=#0f172a;fontSize=10;fontFamily=Helvetica;fontStyle=1;labelBackgroundColor=#FAFAFA;" edge="1" parent="1" source="nSg" target="nRs">
+          <mxGeometry relative="1" as="geometry"></mxGeometry>
+        </mxCell>
+        <mxCell id="eEpRs" value="PrivateLink" style="edgeStyle=orthogonalEdgeStyle;endArrow=classic;html=1;dashed=1;dashPattern=8 4;strokeColor=#334155;strokeWidth=1.5;rounded=1;jumpStyle=arc;jumpSize=6;fontColor=#0f172a;fontSize=10;fontFamily=Helvetica;fontStyle=1;labelBackgroundColor=#FAFAFA;" edge="1" parent="1" source="nEp" target="nRs">
+          <mxGeometry relative="1" as="geometry"></mxGeometry>
+        </mxCell>
+        <mxCell id="eObsGlue" value="trace" style="edgeStyle=orthogonalEdgeStyle;endArrow=classic;html=1;dashed=1;dashPattern=8 4;strokeColor=#334155;strokeWidth=1.5;rounded=1;jumpStyle=arc;jumpSize=6;fontColor=#0f172a;fontSize=10;fontFamily=Helvetica;fontStyle=1;labelBackgroundColor=#FAFAFA;" edge="1" parent="1" source="nObs" target="nGlue">
+          <mxGeometry relative="1" as="geometry"></mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

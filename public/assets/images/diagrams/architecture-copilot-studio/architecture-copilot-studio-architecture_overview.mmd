@@ -1,59 +1,38 @@
 ---
 config:
   flowchart:
-    nodeSpacing: 28
-    rankSpacing: 36
-    diagramPadding: 8
+    nodeSpacing: 48
+    rankSpacing: 64
+    diagramPadding: 16
+    htmlLabels: false
+    curve: linear
   layout: dagre
 ---
 flowchart LR
-subgraph USERS["👥 Architects"]
-    ARCH["Solution Architects"]
-end
-subgraph EXPERIENCE["🖥️ Studio Experience - Azure"]
-    direction TB
-    CHAT["AI Copilot Chat<br/>guided conversation"]
-    CANVAS["Diagram Canvas<br/>live Mermaid edit"]
-    STAGES["Design Stage Navigator<br/>req · diagram · cloud · cost · compare"]
-end
-subgraph EDGE["🚪 Edge"]
-    direction TB
-    AFD["Azure Front Door"]
-    APIM["API Management"]
-    ENTRA["Microsoft Entra ID"]
-    SIG["Azure SignalR<br/>canvas and stage sync"]
-end
-subgraph PIPELINE["📐 AI Design Pipeline - LangGraph"]
-    direction TB
-    S1["① Requirements"]
-    S2["② Diagram"]
-    S3["③ Cloud Map"]
-    S4["④ Cost Model"]
-    S5["⑤ Compare"]
-    S1 --> S2 --> S3 --> S4 --> S5
-end
-subgraph PLATFORM["🔧 Runtime & State"]
-    direction TB
-    T_REQ["Azure Functions<br/>req · mermaid · map · cost · compare"]
-    COSMOS["Cosmos DB"]
-    BLOB["Blob Storage"]
-    AOAI["Azure OpenAI"]
-    SB["Service Bus DLQ"]
-end
-ARCH --> CHAT
-ARCH --> CANVAS
-ARCH --> STAGES
-CHAT --> AFD
-CANVAS --> AFD
-STAGES --> AFD
-AFD --> APIM
-APIM --> ENTRA
-APIM --> SIG
-APIM --> PIPELINE
-PIPELINE --> T_REQ
-PIPELINE --> AOAI
-PIPELINE --> COSMOS
-PIPELINE --> BLOB
-SIG --> COSMOS
-PIPELINE --> SB
-SB --> PIPELINE
+  ARCH["Solution architects"]
+  subgraph EDGE["Public edge"]
+    WAF["Front Door + WAF"]
+    ENTRA["Entra ID OIDC"]
+  end
+  subgraph VNET["Azure VNet"]
+    STUDIO["Studio + LangGraph"]
+    BROKER["Functions broker"]
+    COSMOS[("Cosmos + Private Link")]
+  end
+  LLM["Untrusted LLM"]
+  ARCH --> WAF
+  WAF --> ENTRA
+  WAF --> STUDIO
+  STUDIO --> BROKER
+  BROKER --> COSMOS
+  BROKER --> LLM
+  class ARCH,LLM external
+  class STUDIO compute
+  class WAF,BROKER platform
+  class ENTRA security
+  class COSMOS data
+  classDef compute fill:#ccfbf1,stroke:#0f766e,stroke-width:1.5px,color:#042f2e
+  classDef data fill:#dbeafe,stroke:#1d4ed8,stroke-width:1.5px,color:#1e3a8a
+  classDef security fill:#fef3c7,stroke:#b45309,stroke-width:1.5px,color:#78350f
+  classDef external fill:#f8fafc,stroke:#64748b,stroke-width:1.5px,color:#0f172a,stroke-dasharray:6 4
+  classDef platform fill:#f1f5f9,stroke:#475569,stroke-width:1.5px,color:#0f172a

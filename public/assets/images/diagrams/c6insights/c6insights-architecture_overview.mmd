@@ -1,33 +1,43 @@
 ---
 config:
   flowchart:
-    nodeSpacing: 28
-    rankSpacing: 36
-    diagramPadding: 8
+    nodeSpacing: 48
+    rankSpacing: 64
+    diagramPadding: 16
+    htmlLabels: false
+    curve: linear
   layout: dagre
 ---
 flowchart LR
-subgraph DS["📥 Data Sources"]
-    direction TB
-    A[Vehicle Data]
-    B[External APIs]
-    C[EV & External Inputs]
-end
-subgraph PIPE["⚡ Ingest · Process · AI"]
-    direction TB
-    D[Streaming & API Ingestion]
-    E[Data Processing & Enrichment]
-    F[AI / GenAI Processing]
-    G[Optimization & Simulation]
-    D --> E --> F --> G
-end
-subgraph OUT["🌐 API & Outcomes"]
-    direction TB
-    H[Application Services]
-    I[Fleet Insights & Recommendations]
-    H --> I
-end
-A --> D
-B --> D
-C --> D
-G --> H
+  VEH["Vehicle telemetry"]
+  API["Fuel / AQI APIs"]
+  subgraph EDGE["Public edge"]
+    WAF["ALB + WAF"]
+    IAM["IAM + KMS"]
+  end
+  subgraph VPC["AWS VPC"]
+    MSK["Amazon MSK"]
+    EMR["Amazon EMR"]
+    SVC["FastAPI + RAG"]
+    S3[("S3 lake")]
+  end
+  INS["Fleet insights"]
+  VEH --> WAF
+  API --> WAF
+  WAF --> SVC
+  VEH --> MSK
+  MSK --> EMR
+  EMR --> S3
+  S3 --> SVC
+  SVC --> INS
+  IAM -.-> EMR
+  class VEH,API external
+  class MSK,EMR,SVC compute
+  class S3 data
+  class WAF,IAM security
+  class INS platform
+  classDef compute fill:#ccfbf1,stroke:#0f766e,stroke-width:1.5px,color:#042f2e
+  classDef data fill:#dbeafe,stroke:#1d4ed8,stroke-width:1.5px,color:#1e3a8a
+  classDef security fill:#fef3c7,stroke:#b45309,stroke-width:1.5px,color:#78350f
+  classDef external fill:#f8fafc,stroke:#64748b,stroke-width:1.5px,color:#0f172a,stroke-dasharray:6 4
+  classDef platform fill:#f1f5f9,stroke:#475569,stroke-width:1.5px,color:#0f172a
