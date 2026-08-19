@@ -55,6 +55,12 @@ export function MermaidDiagram({ chart }: { chart: string }) {
   const reactId = useId().replace(/:/g, "");
 
   useEffect(() => {
+    const host = hostRef.current;
+    if (!host) return;
+    host.innerHTML = "";
+    host.classList.remove("is-fit");
+    host.style.removeProperty("--diagram-aspect");
+
     let cancelled = false;
     const timer = window.setTimeout(() => {
       void (async () => {

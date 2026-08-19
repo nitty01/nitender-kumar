@@ -1,5 +1,6 @@
 import {
   createBlockId,
+  dedupeHeroImageBlocks,
   emptyBlock,
   isArticleLayout,
   type ArticleLayout,
@@ -769,7 +770,20 @@ export function importBlogMarkdown(source: string): BlogImportResult {
   }
 
   const resolved = blocks.length ? blocks : [emptyBlock("paragraph")];
-  const firstParagraph = resolved.find((block) => block.type === "paragraph");
+  const { blocks: deduped, removed: heroDupes } = dedupeHeroImageBlocks(resolved, heroUrl);
+  if (heroDupes.length) {
+    issues.push(
+      issue(
+        "info",
+        `Skipped ${heroDupes.length} inline image${heroDupes.length === 1 ? "" : "s"} matching the hero URL — already shown in the article header.`,
+        {
+          expected: "image",
+          hint: "Use a different asset in the body, or remove hero: from front matter if the figure belongs only inline.",
+        },
+      ),
+    );
+  }
+  const firstParagraph = deduped.find((block) => block.type === "paragraph");
   return {
     title: title || "Untitled draft",
     slug,
@@ -781,7 +795,7 @@ export function importBlogMarkdown(source: string): BlogImportResult {
     topics,
     layout,
     heroUrl,
-    blocks: resolved,
+    blocks: deduped,
     issues,
     sourceLineOffset: lineOffset,
   };

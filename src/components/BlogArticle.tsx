@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { BlogBlocks } from "@/components/BlogContent";
-import type { ArticleLayout, BlogBlock } from "@/lib/blog-blocks";
-import { readingMinutes } from "@/lib/blog-blocks";
+import { dedupeHeroImageBlocks, readingMinutes, type ArticleLayout, type BlogBlock } from "@/lib/blog-blocks";
 import { SITE } from "@/lib/site";
 
 export type BlogArticleProps = {
@@ -31,6 +30,7 @@ export function BlogArticle({
 }: BlogArticleProps) {
   const kicker = topics[0];
   const minutes = readingMinutes(bodyText || title);
+  const bodyBlocks = dedupeHeroImageBlocks(blocks, heroUrl).blocks;
 
   return (
     <article className={layout === "newspaper" ? "blog-article blog-article-newspaper" : "blog-article"}>
@@ -79,7 +79,7 @@ export function BlogArticle({
           <img src={heroUrl} alt="" />
         </figure>
       ) : null}
-      <BlogBlocks blocks={blocks} layout={layout} liveDiagrams={liveDiagrams} />
+      <BlogBlocks blocks={bodyBlocks} layout={layout} liveDiagrams={liveDiagrams} />
       {showChrome && topics.length > 0 ? (
         <ul className="blog-topics">
           {topics.map((topic) => (

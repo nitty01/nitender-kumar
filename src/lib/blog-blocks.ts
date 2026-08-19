@@ -72,6 +72,37 @@ export function createBlockId() {
   return `b-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
 }
 
+/** Compare hero and inline image paths without query strings or trailing slashes. */
+export function normalizeAssetUrl(url: string): string {
+  const trimmed = url.trim();
+  if (!trimmed) return "";
+  const base = trimmed.split("#")[0]?.split("?")[0] ?? trimmed;
+  if (base.length > 1 && base.endsWith("/")) return base.slice(0, -1);
+  return base;
+}
+
+export function assetUrlsMatch(a: string, b: string): boolean {
+  const left = normalizeAssetUrl(a);
+  const right = normalizeAssetUrl(b);
+  return Boolean(left && right && left === right);
+}
+
+/** Drop body image blocks that repeat the article hero — hero already renders above the body. */
+export function dedupeHeroImageBlocks(
+  blocks: BlogBlock[],
+  heroUrl: string | null | undefined,
+): { blocks: BlogBlock[]; removed: ImageBlock[] } {
+  if (!heroUrl?.trim()) return { blocks, removed: [] };
+  const removed: ImageBlock[] = [];
+  const kept = blocks.filter((block) => {
+    if (block.type !== "image") return true;
+    if (!assetUrlsMatch(block.url, heroUrl)) return true;
+    removed.push(block);
+    return false;
+  });
+  return { blocks: kept, removed };
+}
+
 export function isArticleLayout(value: unknown): value is ArticleLayout {
   return value === "newspaper" || value === "flow";
 }
