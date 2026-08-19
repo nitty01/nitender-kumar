@@ -35,7 +35,7 @@ import {
   recordSecurityEvent,
 } from "@/lib/admin-rate-limit";
 import { parseTopics } from "@/lib/blog";
-import { blocksToMarkdown, blocksToPlaintext, isArticleLayout, normalizeBlocks } from "@/lib/blog-blocks";
+import { blocksToMarkdown, blocksToPlaintext, countUnparsed, isArticleLayout, normalizeBlocks } from "@/lib/blog-blocks";
 import { blogMediaContext, blogMediaTags, sanitizeMediaToken, type MediaKind } from "@/lib/blog-media";
 
 function isNextControlFlow(error: unknown) {
@@ -299,6 +299,12 @@ export async function persistPostAction(input: {
     const existing = input.id ? await sbGet(input.id) : null;
     const published =
       typeof input.published === "boolean" ? input.published : Boolean(existing?.published);
+    if (published && countUnparsed(blocks) > 0) {
+      return {
+        ok: false as const,
+        error: "Convert leftover snippets before publishing.",
+      };
+    }
     const payload = {
       id: input.id,
       slug,
@@ -382,6 +388,12 @@ export async function publishPostAction(formData: FormData) {
   const id = String(formData.get("id") ?? "");
   const published = formData.get("published") === "true";
   if (!id) return;
+  if (published) {
+    const existing = await sbGet(id);
+    if (existing && countUnparsed(existing.blocks) > 0) {
+      redirect(`/admin/blog/${id}?saved=unparsed`);
+    }
+  }
   await sbFlags(id, { published, ...(published ? { archived: false } : {}) });
   revalidatePath("/", "layout");
   redirect("/admin/blog");

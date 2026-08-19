@@ -28,6 +28,7 @@ export type MermaidBlock = BlockBase & DiagramExport & { type: "mermaid"; chart:
 export type DrawioBlock = BlockBase &
   DiagramExport & { type: "drawio"; source: string; format: "xml" | "url" };
 export type DividerBlock = BlockBase & { type: "divider" };
+export type UnparsedBlock = BlockBase & { type: "unparsed"; raw: string; reason: string };
 export type SplitBlock = BlockBase & { type: "split"; left: BlogBlock[]; right: BlogBlock[] };
 
 export type BlogBlock =
@@ -40,6 +41,7 @@ export type BlogBlock =
   | MermaidBlock
   | DrawioBlock
   | DividerBlock
+  | UnparsedBlock
   | SplitBlock;
 
 export const BLOCK_TYPES = [
@@ -52,6 +54,7 @@ export const BLOCK_TYPES = [
   "mermaid",
   "drawio",
   "divider",
+  "unparsed",
   "split",
 ] as const;
 
@@ -85,6 +88,8 @@ export function emptyBlock(type: BlogBlock["type"]): BlogBlock {
       return { id, type, source: DRAWIO_TEMPLATE, format: "xml" };
     case "split":
       return { id, type, left: [emptyBlock("paragraph")], right: [emptyBlock("paragraph")] };
+    case "unparsed":
+      return { id, type, raw: "", reason: "Needs a blog block type." };
     default:
       return { id, type: "divider" };
   }
@@ -196,6 +201,13 @@ export function normalizeBlocks(raw: unknown): BlogBlock[] {
       });
     } else if (type === "divider") {
       blocks.push({ id, type });
+    } else if (type === "unparsed") {
+      blocks.push({
+        id,
+        type,
+        raw: String(row.raw ?? row.text ?? ""),
+        reason: String(row.reason ?? "Needs a blog block type."),
+      });
     }
   }
   return blocks;
@@ -251,6 +263,8 @@ export function blocksToPlaintext(blocks: BlogBlock[]): string {
           return [block.caption, block.chart].filter(Boolean).join("\n");
         case "drawio":
           return block.caption || (block.format === "url" ? block.source : "");
+        case "unparsed":
+          return block.raw;
         case "split":
           return [blocksToPlaintext(block.left), blocksToPlaintext(block.right)]
             .filter(Boolean)
@@ -288,6 +302,8 @@ export function blocksToMarkdown(blocks: BlogBlock[]): string {
           return `\`\`\`mermaid\n${block.chart}\n\`\`\``;
         case "drawio":
           return `\`\`\`drawio\n${block.source}\n\`\`\``;
+        case "unparsed":
+          return block.raw;
         case "split":
           return [blocksToMarkdown(block.left), blocksToMarkdown(block.right)]
             .filter(Boolean)
@@ -300,6 +316,36 @@ export function blocksToMarkdown(blocks: BlogBlock[]): string {
     })
     .filter(Boolean)
     .join("\n\n");
+}
+
+export function countUnparsed(blocks: BlogBlock[]): number {
+  return blocks.reduce((sum, block) => {
+    if (block.type === "unparsed") return sum + 1;
+    if (block.type === "split") return sum + countUnparsed(block.left) + countUnparsed(block.right);
+    return sum;
+  }, 0);
+}
+
+export function replaceBlockById(blocks: BlogBlock[], id: string, next: BlogBlock[]): BlogBlock[] {
+  const mapped: BlogBlock[] = [];
+  for (const block of blocks) {
+    if (block.id === id) {
+      mapped.push(...next);
+      continue;
+    }
+    if (block.type === "split") {
+      const left = replaceBlockById(block.left, id, next);
+      const right = replaceBlockById(block.right, id, next);
+      mapped.push({
+        ...block,
+        left: left.length ? left : [emptyBlock("paragraph")],
+        right: right.length ? right : [emptyBlock("paragraph")],
+      });
+      continue;
+    }
+    mapped.push(block);
+  }
+  return mapped.length ? mapped : [emptyBlock("paragraph")];
 }
 
 export function readingMinutes(text: string) {

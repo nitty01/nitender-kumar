@@ -117,6 +117,7 @@ function BlockView({
     );
   }
   if (block.type === "divider") return <hr className="blog-divider" />;
+  if (block.type === "unparsed" && block.raw.trim()) return <Html text={block.raw} />;
   return null;
 }
 

@@ -81,15 +81,21 @@
   color: #86efac;
 }
 
+.admin-warn {
+  color: #e8c07d;
+}
+
 .admin-form,
-.admin-editor {
+.admin-editor,
+.admin-import {
   display: grid;
   gap: 1rem;
   margin-top: 1.5rem;
 }
 
 .admin-form label,
-.admin-editor label {
+.admin-editor label,
+.admin-import label {
   display: grid;
   gap: 0.35rem;
   font-size: 0.9rem;
@@ -99,6 +105,8 @@
 .admin-editor input,
 .admin-editor textarea,
 .admin-editor select,
+.admin-import input,
+.admin-import textarea,
 .admin-form select,
 .admin-form button,
 .admin-editor button[type="submit"],
@@ -171,7 +179,8 @@
 }
 
 .admin-addbar button,
-.admin-block-bar button {
+.admin-block-bar button,
+.admin-unparsed-actions button {
   font: inherit;
   font-size: 0.8rem;
   background: #15181f;
@@ -1077,4 +1086,57 @@ html.light .blog-article-header h1,
 html.light .blog-lead h2,
 html.light .blog-masthead h1 {
   color: var(--text-dark, #1c1915);
+}
+
+a.admin-btn-secondary {
+  display: inline-block;
+  text-decoration: none;
+}
+
+.admin-import-drop {
+  display: grid;
+  gap: 0.75rem;
+  justify-items: start;
+  padding: 1.25rem 1.35rem;
+  border: 1px dashed rgba(236, 232, 225, 0.28);
+  border-radius: 0.5rem;
+  background: #15181f;
+}
+
+.admin-import-drop.is-active {
+  border-color: #c6ae84;
+  background: #1b1f28;
+}
+
+.admin-import .admin-panel {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.admin-import-issues {
+  list-style: none;
+  padding: 0;
+  margin: 0.65rem 0 0;
+  display: grid;
+  gap: 0.45rem;
+}
+
+.admin-block-unparsed {
+  border-color: rgba(232, 192, 125, 0.45);
+}
+
+.admin-unparsed {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.admin-unparsed-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.admin-unparsed-actions button.is-suggested {
+  border-color: #c6ae84;
+  color: #c6ae84;
 }

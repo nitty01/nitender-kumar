@@ -237,7 +237,7 @@ async function renderProjectDrawio(container: HTMLElement, mode: string) {
   bindDiagramCanvas(container);
 }
 
-function isRenderable(element: HTMLElement | null) {
+function isRenderable(element: HTMLElement | null): element is HTMLElement {
   if (!element) return false;
   const details = element.closest("details");
   if (details && !details.open) return false;

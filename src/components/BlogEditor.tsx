@@ -4,10 +4,13 @@ import { useEffect, useRef, useState } from "react";
 import { persistPostAction, tagMediaAction, uploadMediaAction } from "@/app/admin/actions";
 import { BlogArticle } from "@/components/BlogArticle";
 import { MediaCatalogue } from "@/components/MediaCatalogue";
+import { UnparsedBlockFields } from "@/components/UnparsedBlockFields";
 import {
   DRAWIO_TEMPLATE,
   blocksToPlaintext,
+  countUnparsed,
   emptyBlock,
+  replaceBlockById,
   type ArticleLayout,
   type BlogBlock,
 } from "@/lib/blog-blocks";
@@ -156,6 +159,7 @@ export function BlogEditor({ post, cloudinaryEnabled = false, saved }: BlogEdito
   busyRef.current = busy;
   const isPublished = published;
   const bodyText = blocksToPlaintext(blocks);
+  const leftover = countUnparsed(blocks);
 
   function editorSnapshot(data = snapshotRef.current) {
     return JSON.stringify({
@@ -492,6 +496,15 @@ export function BlogEditor({ post, cloudinaryEnabled = false, saved }: BlogEdito
       }
 
       const publish = intent === "publish" || intent === "save";
+      const leftover = countUnparsed(nextBlocks);
+      if (publish && leftover) {
+        await persistCurrent(false);
+        setUploadStatus(
+          `${leftover} leftover snippet${leftover === 1 ? "" : "s"} still need a block type. Draft saved; convert them before publishing.`,
+        );
+        return;
+      }
+
       await persistCurrent(publish);
       if (exportErrors.length) {
         setUploadStatus(
@@ -524,6 +537,9 @@ export function BlogEditor({ post, cloudinaryEnabled = false, saved }: BlogEdito
         <p className="admin-save-status">{persistStatus}</p>
         {saved === "draft" ? <p className="admin-ok">Draft saved. Not visible on the public site.</p> : null}
         {saved === "published" ? <p className="admin-ok">Published to /blog.</p> : null}
+        {saved === "unparsed" ? (
+          <p className="admin-warn">Convert leftover snippets before publishing.</p>
+        ) : null}
       </div>
 
       <label>
@@ -648,6 +664,12 @@ export function BlogEditor({ post, cloudinaryEnabled = false, saved }: BlogEdito
             Add a line item, then move it up or down. Publish exports Mermaid and Draw.io as PNGs
             to Cloudinary.
           </p>
+          {leftover ? (
+            <p className="admin-warn">
+              {leftover} leftover snippet{leftover === 1 ? "" : "s"} from import still need a block
+              type. Convert them before publishing.
+            </p>
+          ) : null}
           <AddBar
             onAdd={(type) => insertType(type, { at: blocks.length })}
             onLibrary={() => openLibrary({ at: blocks.length })}
@@ -670,9 +692,18 @@ export function BlogEditor({ post, cloudinaryEnabled = false, saved }: BlogEdito
 
           <ol className="admin-block-list">
             {blocks.map((block, index) => (
-              <li key={block.id} className="admin-block">
+              <li
+                key={block.id}
+                className={block.type === "unparsed" ? "admin-block admin-block-unparsed" : "admin-block"}
+              >
                 <div className="admin-block-bar">
-                  <span>{block.type === "split" ? "half / half" : block.type}</span>
+                  <span>
+                    {block.type === "split"
+                      ? "half / half"
+                      : block.type === "unparsed"
+                        ? "needs review"
+                        : block.type}
+                  </span>
                   <button type="button" onClick={() => move(index, -1)} disabled={index === 0}>
                     Up
                   </button>
@@ -693,9 +724,16 @@ export function BlogEditor({ post, cloudinaryEnabled = false, saved }: BlogEdito
                       <div key={side} className="admin-split-col">
                         <p className="admin-muted">{side === "left" ? "Left" : "Right"}</p>
                         {block[side].map((child, childIndex) => (
-                          <div key={child.id} className="admin-block admin-block-nested">
+                          <div
+                            key={child.id}
+                            className={
+                              child.type === "unparsed"
+                                ? "admin-block admin-block-nested admin-block-unparsed"
+                                : "admin-block admin-block-nested"
+                            }
+                          >
                             <div className="admin-block-bar">
-                              <span>{child.type}</span>
+                              <span>{child.type === "unparsed" ? "needs review" : child.type}</span>
                               <button
                                 type="button"
                                 onClick={() =>
@@ -751,6 +789,11 @@ export function BlogEditor({ post, cloudinaryEnabled = false, saved }: BlogEdito
                                   column.map((item) => (item.id === child.id ? next : item)),
                                 )
                               }
+                              onReplace={(next) =>
+                                patchColumn(block.id, side, (column) =>
+                                  replaceBlockById(column, child.id, next),
+                                )
+                              }
                               onHero={(url) => setHeroUrl(url)}
                               onLibrary={() => openLibrary({ at: childIndex + 1, splitId: block.id, side }, child.id)}
                               onUploadDiagram={() => {
@@ -776,6 +819,7 @@ export function BlogEditor({ post, cloudinaryEnabled = false, saved }: BlogEdito
                   <BlockFields
                     block={block}
                     onChange={(next) => patchBlock(block.id, next)}
+                    onReplace={(next) => setBlocks((current) => replaceBlockById(current, block.id, next))}
                     onHero={(url) => setHeroUrl(url)}
                     onLibrary={() => openLibrary({ at: index + 1 }, block.id)}
                     onUploadDiagram={() => {
@@ -849,12 +893,14 @@ export function BlogEditor({ post, cloudinaryEnabled = false, saved }: BlogEdito
 function BlockFields({
   block,
   onChange,
+  onReplace,
   onHero,
   onLibrary,
   onUploadDiagram,
 }: {
   block: BlogBlock;
   onChange: (block: BlogBlock) => void;
+  onReplace?: (blocks: BlogBlock[]) => void;
   onHero: (url: string) => void;
   onLibrary: () => void;
   onUploadDiagram: () => void;
@@ -1043,6 +1089,15 @@ function BlockFields({
           Attach PNG from catalogue
         </button>
       </div>
+    );
+  }
+  if (block.type === "unparsed") {
+    return (
+      <UnparsedBlockFields
+        block={block}
+        onChange={onChange}
+        onReplace={(next) => (onReplace ? onReplace(next) : onChange(next[0] ?? block))}
+      />
     );
   }
   return <p className="admin-muted">Section break</p>;

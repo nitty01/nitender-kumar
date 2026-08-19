@@ -117,7 +117,10 @@ export default async function AdminHomePage({
       <section className="admin-panel">
         <div className="admin-row">
           <h2>Recent posts</h2>
-          <Link href="/admin/blog/new">New post</Link>
+          <div className="admin-editor-actions">
+            <Link href="/admin/blog/import">Upload markdown</Link>
+            <Link href="/admin/blog/new">New post</Link>
+          </div>
         </div>
         <ul className="admin-list">
           {posts.slice(0, 6).map((post) => (

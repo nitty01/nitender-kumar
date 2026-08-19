@@ -26,9 +26,14 @@ export default async function AdminBlogPage({
     <main className="admin-shell">
       <div className="admin-row">
         <h1>Blog</h1>
-        <Link href="/admin/blog/new" className="admin-btn">
-          New post
-        </Link>
+        <div className="admin-editor-actions">
+          <Link href="/admin/blog/import" className="admin-btn-secondary">
+            Upload markdown
+          </Link>
+          <Link href="/admin/blog/new" className="admin-btn">
+            New post
+          </Link>
+        </div>
       </div>
       <p className="admin-muted">
         Save drafts until the piece is ready, then publish to /blog. Only published posts are
