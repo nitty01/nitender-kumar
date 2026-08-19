@@ -2,12 +2,12 @@
 
 import { useEffect, useRef, useState } from "react";
 import { persistPostAction, tagMediaAction, uploadMediaAction } from "@/app/admin/actions";
-import { BlogArticle } from "@/components/BlogArticle";
+import { AdminTabPanel, AdminViewTabs, type AdminViewTab } from "@/components/AdminViewTabs";
+import { BlogPagePreview } from "@/components/BlogPagePreview";
 import { MediaCatalogue } from "@/components/MediaCatalogue";
 import { UnparsedBlockFields } from "@/components/UnparsedBlockFields";
 import {
   DRAWIO_TEMPLATE,
-  blocksToPlaintext,
   countUnparsed,
   emptyBlock,
   replaceBlockById,
@@ -124,6 +124,7 @@ export function BlogEditor({ post, cloudinaryEnabled = false, saved }: BlogEdito
   const [persistStatus, setPersistStatus] = useState(post?.id ? "Saved" : "Unsaved draft");
   const [busy, setBusy] = useState(false);
   const [catalogueOpen, setCatalogueOpen] = useState(false);
+  const [viewTab, setViewTab] = useState<AdminViewTab>("edit");
   const [published, setPublished] = useState(Boolean(post?.published && !post?.archived));
   const imageRef = useRef<HTMLInputElement>(null);
   const drawioRef = useRef<HTMLInputElement>(null);
@@ -158,7 +159,6 @@ export function BlogEditor({ post, cloudinaryEnabled = false, saved }: BlogEdito
   };
   busyRef.current = busy;
   const isPublished = published;
-  const bodyText = blocksToPlaintext(blocks);
   const leftover = countUnparsed(blocks);
 
   function editorSnapshot(data = snapshotRef.current) {
@@ -657,7 +657,10 @@ export function BlogEditor({ post, cloudinaryEnabled = false, saved }: BlogEdito
         </label>
       </fieldset>
 
-      <div className="admin-editor-split">
+      <AdminViewTabs active={viewTab} onChange={setViewTab} label="Blog editor view" />
+
+      <AdminTabPanel tab="edit" active={viewTab}>
+      <div className="admin-editor-write">
         <section className="admin-canvas" aria-label="Story canvas">
           <h2>Story blocks</h2>
           <p className="admin-muted">
@@ -836,25 +839,26 @@ export function BlogEditor({ post, cloudinaryEnabled = false, saved }: BlogEdito
             ))}
           </ol>
         </section>
-
-        <section className="admin-preview" aria-label="Preview">
-          <h2>Live article</h2>
-          <div className="admin-preview-frame">
-            <BlogArticle
-              title={title}
-              excerpt={excerpt}
-              date={new Date().toISOString().slice(0, 10)}
-              topics={topics}
-              heroUrl={heroUrl || null}
-              layout={layout}
-              blocks={blocks}
-              bodyText={bodyText}
-              showChrome
-              liveDiagrams
-            />
-          </div>
-        </section>
       </div>
+      </AdminTabPanel>
+
+      <AdminTabPanel tab="preview" active={viewTab}>
+        <section className="admin-preview" aria-label="Blog page preview">
+          <p className="admin-muted">
+            Exact layout of <code>/blog/{slug || "your-slug"}</code> — header, hero, body, topics,
+            and live diagrams.
+          </p>
+          <BlogPagePreview
+            title={title}
+            excerpt={excerpt}
+            topics={topics}
+            heroUrl={heroUrl || null}
+            layout={layout}
+            blocks={blocks}
+            liveDiagrams
+          />
+        </section>
+      </AdminTabPanel>
 
       <div className="admin-editor-actions">
         <button type="button" className="admin-btn-secondary" onClick={() => void exportNow()} disabled={busy}>

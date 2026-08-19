@@ -28,7 +28,16 @@ export type MermaidBlock = BlockBase & DiagramExport & { type: "mermaid"; chart:
 export type DrawioBlock = BlockBase &
   DiagramExport & { type: "drawio"; source: string; format: "xml" | "url" };
 export type DividerBlock = BlockBase & { type: "divider" };
-export type UnparsedBlock = BlockBase & { type: "unparsed"; raw: string; reason: string };
+export type UnparsedBlock = BlockBase & {
+  type: "unparsed";
+  raw: string;
+  reason: string;
+  hint?: string;
+  expected?: string;
+  code?: string;
+  line?: number;
+  example?: string;
+};
 export type SplitBlock = BlockBase & { type: "split"; left: BlogBlock[]; right: BlogBlock[] };
 
 export type BlogBlock =
@@ -89,7 +98,7 @@ export function emptyBlock(type: BlogBlock["type"]): BlogBlock {
     case "split":
       return { id, type, left: [emptyBlock("paragraph")], right: [emptyBlock("paragraph")] };
     case "unparsed":
-      return { id, type, raw: "", reason: "Needs a blog block type." };
+      return { id, type, raw: "", reason: "Needs a blog block type.", hint: "", expected: "paragraph" };
     default:
       return { id, type: "divider" };
   }
@@ -207,6 +216,11 @@ export function normalizeBlocks(raw: unknown): BlogBlock[] {
         type,
         raw: String(row.raw ?? row.text ?? ""),
         reason: String(row.reason ?? "Needs a blog block type."),
+        hint: optionalString(row.hint),
+        expected: optionalString(row.expected),
+        code: optionalString(row.code),
+        line: typeof row.line === "number" ? row.line : undefined,
+        example: optionalString(row.example),
       });
     }
   }

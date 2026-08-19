@@ -5,7 +5,35 @@ import {
   listPostsAction,
   publishPostAction,
 } from "@/app/admin/actions";
+import { AdminBlogShell } from "@/components/AdminBlogShell";
 import { requireAdminOrRedirect } from "@/lib/admin-auth";
+import type { AdminPost } from "@/lib/admin-data";
+import type { BlogPost } from "@/content/blog-posts";
+
+function toBlogPost(post: AdminPost): BlogPost {
+  return {
+    slug: post.slug,
+    title: post.title,
+    excerpt: post.excerpt ?? "",
+    date: (post.published_at ?? post.updated_at).slice(0, 10),
+    topics: post.topics,
+    body: post.body,
+    blocks: post.blocks,
+    heroUrl: post.heroUrl,
+    layout: post.layout,
+  };
+}
+
+function publishedPostsForPreview(posts: AdminPost[]): BlogPost[] {
+  return posts
+    .filter((post) => post.published && !post.archived)
+    .sort((a, b) => {
+      const left = a.published_at ?? a.updated_at;
+      const right = b.published_at ?? b.updated_at;
+      return right.localeCompare(left);
+    })
+    .map(toBlogPost);
+}
 
 export default async function AdminBlogPage({
   searchParams,
@@ -24,99 +52,66 @@ export default async function AdminBlogPage({
 
   return (
     <main className="admin-shell">
-      <div className="admin-row">
-        <h1>Blog</h1>
-        <div className="admin-editor-actions">
-          <Link href="/admin/blog/import" className="admin-btn-secondary">
-            Upload markdown
-          </Link>
-          <Link href="/admin/blog/new" className="admin-btn">
-            New post
-          </Link>
-        </div>
-      </div>
-      <p className="admin-muted">
-        Save drafts until the piece is ready, then publish to /blog. Only published posts are
-        public.
-      </p>
-      <nav className="admin-filters" aria-label="Filter posts">
-        <Link href="/admin/blog" className={!status ? "is-active" : undefined}>
-          All
-        </Link>
-        <Link href="/admin/blog?status=draft" className={status === "draft" ? "is-active" : undefined}>
-          Drafts
-        </Link>
-        <Link
-          href="/admin/blog?status=published"
-          className={status === "published" ? "is-active" : undefined}
-        >
-          Published
-        </Link>
-        <Link
-          href="/admin/blog?status=archived"
-          className={status === "archived" ? "is-active" : undefined}
-        >
-          Archived
-        </Link>
-      </nav>
-      <div className="admin-table-wrap">
-        <table className="admin-table">
-          <thead>
-            <tr>
-              <th>Title</th>
-              <th>Status</th>
-              <th>Updated</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filtered.length === 0 ? (
+      <AdminBlogShell previewPosts={publishedPostsForPreview(posts)} status={status}>
+        <div className="admin-table-wrap">
+          <table className="admin-table">
+            <thead>
               <tr>
-                <td colSpan={4} className="admin-muted">
-                  No posts in this view.
-                </td>
+                <th>Title</th>
+                <th>Status</th>
+                <th>Updated</th>
+                <th>Actions</th>
               </tr>
-            ) : null}
-            {filtered.map((post) => (
-              <tr key={post.id}>
-                <td>
-                  <Link href={`/admin/blog/${post.id}`}>{post.title}</Link>
-                  <div className="admin-muted">/{post.slug}</div>
-                </td>
-                <td>{post.archived ? "Archived" : post.published ? "Published" : "Draft"}</td>
-                <td>{post.updated_at?.slice(0, 10)}</td>
-                <td className="admin-actions">
-                  <Link href={`/admin/blog/${post.id}`}>Edit</Link>
-                  <form action={publishPostAction}>
-                    <input type="hidden" name="id" value={post.id} />
-                    <input
-                      type="hidden"
-                      name="published"
-                      value={post.published ? "false" : "true"}
-                    />
-                    <button type="submit">{post.published ? "Unpublish" : "Publish"}</button>
-                  </form>
-                  <form action={archivePostAction}>
-                    <input type="hidden" name="id" value={post.id} />
-                    <input
-                      type="hidden"
-                      name="archived"
-                      value={post.archived ? "false" : "true"}
-                    />
-                    <button type="submit">{post.archived ? "Restore" : "Archive"}</button>
-                  </form>
-                  <form action={deletePostAction}>
-                    <input type="hidden" name="id" value={post.id} />
-                    <button type="submit" className="admin-danger">
-                      Delete
-                    </button>
-                  </form>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              {filtered.length === 0 ? (
+                <tr>
+                  <td colSpan={4} className="admin-muted">
+                    No posts in this view.
+                  </td>
+                </tr>
+              ) : null}
+              {filtered.map((post) => (
+                <tr key={post.id}>
+                  <td>
+                    <Link href={`/admin/blog/${post.id}`}>{post.title}</Link>
+                    <div className="admin-muted">/{post.slug}</div>
+                  </td>
+                  <td>{post.archived ? "Archived" : post.published ? "Published" : "Draft"}</td>
+                  <td>{post.updated_at?.slice(0, 10)}</td>
+                  <td className="admin-actions">
+                    <Link href={`/admin/blog/${post.id}`}>Edit</Link>
+                    <form action={publishPostAction}>
+                      <input type="hidden" name="id" value={post.id} />
+                      <input
+                        type="hidden"
+                        name="published"
+                        value={post.published ? "false" : "true"}
+                      />
+                      <button type="submit">{post.published ? "Unpublish" : "Publish"}</button>
+                    </form>
+                    <form action={archivePostAction}>
+                      <input type="hidden" name="id" value={post.id} />
+                      <input
+                        type="hidden"
+                        name="archived"
+                        value={post.archived ? "false" : "true"}
+                      />
+                      <button type="submit">{post.archived ? "Restore" : "Archive"}</button>
+                    </form>
+                    <form action={deletePostAction}>
+                      <input type="hidden" name="id" value={post.id} />
+                      <button type="submit" className="admin-danger">
+                        Delete
+                      </button>
+                    </form>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </AdminBlogShell>
     </main>
   );
 }

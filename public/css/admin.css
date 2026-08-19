@@ -594,28 +594,97 @@
   color: var(--text-muted, #9a948a);
 }
 
-.blog-drawio {
-  display: block;
-  width: 100%;
-  height: 28rem;
-  border: 0;
-  border-radius: 0.5rem;
-  background: #fff;
+.blog-figure-diagram {
+  --diagram-max-width: min(100%, 36rem);
+  --diagram-max-height: min(40vh, 18rem);
+  margin: 1.25rem auto 0;
+  max-width: var(--diagram-max-width);
 }
 
-.blog-mermaid {
-  margin: 1.5rem 0 0;
-  min-height: 8rem;
-  padding: 1rem;
-  border-radius: 0.75rem;
+.blog-newspaper-col .blog-figure-diagram,
+.blog-split-col .blog-figure-diagram {
+  --diagram-max-width: 100%;
+  --diagram-max-height: min(36vh, 16rem);
+}
+
+.blog-diagram-frame {
+  width: 100%;
+  margin-inline: auto;
+  overflow: hidden;
+  border-radius: 0.5rem;
   background: rgba(236, 232, 225, 0.04);
 }
 
-.blog-mermaid svg {
+.blog-diagram-frame--mermaid {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  max-width: var(--diagram-max-width, 100%);
+  max-height: var(--diagram-max-height);
+  padding: 0.5rem 0.65rem;
+  aspect-ratio: var(--diagram-aspect, 16 / 9);
+}
+
+.blog-diagram-frame--mermaid:not(.is-fit) {
+  min-height: 4rem;
+  aspect-ratio: auto;
+}
+
+.blog-diagram-frame--mermaid svg {
   display: block;
+  width: 100%;
+  height: 100%;
   max-width: 100%;
+  max-height: 100%;
+}
+
+.blog-diagram-frame--drawio {
+  position: relative;
+  width: 100%;
+  max-width: var(--diagram-max-width, 100%);
+  aspect-ratio: var(--diagram-aspect, 16 / 10);
+  max-height: var(--diagram-max-height);
+}
+
+.blog-drawio {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  border-radius: inherit;
+  background: #fff;
+}
+
+.blog-figure-diagram img {
+  display: block;
+  width: 100%;
+  max-width: var(--diagram-max-width, 100%);
+  max-height: var(--diagram-max-height);
   height: auto;
-  margin: 0 auto;
+  margin-inline: auto;
+  object-fit: contain;
+  border-radius: 0.5rem;
+}
+
+@media (min-width: 720px) {
+  .blog-figure-diagram {
+    --diagram-max-height: min(44vh, 20rem);
+  }
+}
+
+html.light .blog-drawio {
+  border: 1px solid rgba(28, 25, 21, 0.08);
+}
+
+/* Legacy aliases — project pages still use .blog-mermaid */
+.blog-mermaid {
+  margin: 0;
+  min-height: 0;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
 }
 
 html.light .blog-markdown h2,
@@ -623,10 +692,6 @@ html.light .blog-markdown h3,
 html.light .blog-markdown h4,
 html.light .admin-preview-frame > h1 {
   color: var(--text-dark, #1c1915);
-}
-
-html.light .blog-drawio {
-  border: 1px solid rgba(28, 25, 21, 0.08);
 }
 
 .blog-index {
@@ -928,12 +993,6 @@ html.light .blog-drawio {
   max-width: none;
 }
 
-.blog-figure-diagram img,
-.blog-figure-diagram .blog-mermaid,
-.blog-figure-diagram .blog-drawio {
-  width: 100%;
-}
-
 .blog-divider {
   border: 0;
   border-top: 1px solid rgba(236, 232, 225, 0.14);
@@ -1093,19 +1152,55 @@ a.admin-btn-secondary {
   text-decoration: none;
 }
 
+.admin-import-drop-wrap {
+  display: grid;
+  gap: 0.5rem;
+}
+
 .admin-import-drop {
   display: grid;
-  gap: 0.75rem;
-  justify-items: start;
-  padding: 1.25rem 1.35rem;
-  border: 1px dashed rgba(236, 232, 225, 0.28);
-  border-radius: 0.5rem;
+  gap: 0.65rem;
+  justify-items: center;
+  align-content: center;
+  min-height: 9rem;
+  padding: 1.5rem 1.35rem;
+  border: 2px dashed rgba(236, 232, 225, 0.28);
+  border-radius: 0.65rem;
   background: #15181f;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.admin-import-drop:focus-visible {
+  outline: 2px solid #c6ae84;
+  outline-offset: 2px;
 }
 
 .admin-import-drop.is-active {
   border-color: #c6ae84;
   background: #1b1f28;
+}
+
+.admin-import-drop.is-busy {
+  opacity: 0.85;
+  pointer-events: none;
+}
+
+.admin-import-drop-compact {
+  min-height: 5.5rem;
+  padding: 1rem 1.15rem;
+}
+
+.admin-import-drop-title {
+  margin: 0;
+  font-weight: 600;
+}
+
+.admin-import-drop-file {
+  margin: 0;
+  font-size: 0.9rem;
+  color: rgba(236, 232, 225, 0.72);
 }
 
 .admin-import .admin-panel {
@@ -1139,4 +1234,170 @@ a.admin-btn-secondary {
 .admin-unparsed-actions button.is-suggested {
   border-color: #c6ae84;
   color: #c6ae84;
+}
+
+.admin-import-guide {
+  margin-top: 0;
+}
+
+.admin-structure-grid {
+  display: grid;
+  gap: 0.65rem;
+}
+
+@media (min-width: 720px) {
+  .admin-structure-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.admin-structure-card {
+  border: 1px solid rgba(236, 232, 225, 0.12);
+  border-radius: 0.4rem;
+  padding: 0.55rem 0.75rem;
+  background: #0c0e12;
+}
+
+.admin-structure-card summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: #ece8e1;
+}
+
+.admin-template-preview {
+  margin: 0.55rem 0 0;
+  padding: 0.65rem 0.75rem;
+  border-radius: 0.35rem;
+  background: #15181f;
+  border: 1px solid rgba(236, 232, 225, 0.1);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.78rem;
+  line-height: 1.45;
+  white-space: pre-wrap;
+  overflow-x: auto;
+}
+
+.admin-parse-error {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.admin-parse-hint {
+  margin: 0;
+  color: #9a948a;
+  font-size: 0.88rem;
+}
+
+.admin-parse-example {
+  border: 1px solid rgba(236, 232, 225, 0.1);
+  border-radius: 0.35rem;
+  padding: 0.55rem 0.75rem;
+  background: #0c0e12;
+}
+
+.admin-parse-example summary {
+  cursor: pointer;
+  color: #c6ae84;
+}
+
+.admin-parse-issue {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.admin-parse-issue button {
+  width: fit-content;
+  font: inherit;
+  font-size: 0.78rem;
+  background: #15181f;
+  color: #ece8e1;
+  border: 1px solid rgba(236, 232, 225, 0.16);
+  border-radius: 0.3rem;
+  padding: 0.2rem 0.5rem;
+  cursor: pointer;
+}
+
+.admin-view-tabs {
+  display: flex;
+  gap: 0;
+  margin-top: 1.25rem;
+  border-bottom: 1px solid rgba(236, 232, 225, 0.14);
+}
+
+.admin-view-tabs button {
+  font: inherit;
+  background: transparent;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  padding: 0.55rem 1rem;
+  color: #9a948a;
+  cursor: pointer;
+}
+
+.admin-view-tabs button.is-active,
+.admin-view-tabs button[aria-selected="true"] {
+  color: #ece8e1;
+  border-bottom-color: #c6ae84;
+}
+
+.admin-tab-panel {
+  padding-top: 1rem;
+}
+
+.admin-blog-preview-shell {
+  border: 1px solid rgba(236, 232, 225, 0.12);
+  border-radius: 0.5rem;
+  overflow: hidden;
+  background: var(--bg-dark, #0c0e12);
+}
+
+.admin-blog-preview-banner {
+  margin: 0;
+  padding: 0.65rem 1rem;
+  border-bottom: 1px solid rgba(236, 232, 225, 0.1);
+  font-size: 0.88rem;
+}
+
+.admin-blog-preview-page {
+  max-height: min(85vh, 56rem);
+  overflow: auto;
+}
+
+.admin-blog-preview-page .blog-portal {
+  padding-top: 2rem;
+  padding-bottom: 3rem;
+}
+
+.admin-blog-preview-page .blog-lead-link {
+  cursor: default;
+}
+
+.admin-blog-preview-page .blog-more span {
+  color: var(--text-muted, #9a948a);
+}
+
+.admin-blog-preview-page .blog-topics li {
+  display: inline-block;
+  padding: 0.2rem 0.65rem;
+  border: 1px solid rgba(236, 232, 225, 0.16);
+  border-radius: 999px;
+  font-size: 0.85rem;
+  color: #c6ae84;
+}
+
+.admin-blog-preview-back {
+  color: var(--text-muted, #9a948a);
+}
+
+.admin-blog-preview-url {
+  margin: -0.75rem 0 0;
+  font-size: 0.82rem;
+  color: #9a948a;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.admin-preview .admin-muted code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.88em;
 }

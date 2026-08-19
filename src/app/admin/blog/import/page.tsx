@@ -13,9 +13,8 @@ export default async function ImportBlogPage() {
         </Link>
       </div>
       <p className="admin-muted">
-        Import a plain-text or markdown file into a draft. Parsed sections are kept. Leftover
-        snippets can be converted here, then edited or published from the editor — including
-        diagram PNG export.
+        Import markdown using the structure guide and template. Parsed sections are kept; failures
+        show what is missing and can be fixed inline before saving a draft.
       </p>
       <BlogImport />
     </main>

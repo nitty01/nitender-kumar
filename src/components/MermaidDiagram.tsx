@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useId, useRef } from "react";
+import { fitMermaidSvg } from "@/lib/fit-diagram";
 
 declare global {
   interface Window {
@@ -61,6 +62,8 @@ export function MermaidDiagram({ chart }: { chart: string }) {
         if (!cancelled && hostRef.current) {
           lastGood.current = svg;
           hostRef.current.innerHTML = svg;
+          const svgEl = hostRef.current.querySelector("svg");
+          if (svgEl) fitMermaidSvg(hostRef.current, svgEl);
         }
       })().catch(() => {
         if (!cancelled && hostRef.current && !lastGood.current) {
@@ -75,5 +78,5 @@ export function MermaidDiagram({ chart }: { chart: string }) {
     };
   }, [chart, reactId]);
 
-  return <div ref={hostRef} className="blog-mermaid diagram-canvas" />;
+  return <div ref={hostRef} className="blog-diagram-frame blog-diagram-frame--mermaid" />;
 }

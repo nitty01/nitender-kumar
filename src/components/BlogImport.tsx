@@ -1,8 +1,12 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { persistPostAction } from "@/app/admin/actions";
+import { AdminTabPanel, AdminViewTabs, type AdminViewTab } from "@/components/AdminViewTabs";
+import { readPendingMarkdownImport } from "@/components/BlogMarkdownDrop";
+import { BlogPagePreview } from "@/components/BlogPagePreview";
+import { MarkdownFileDropzone } from "@/components/MarkdownFileDropzone";
 import { UnparsedBlockFields } from "@/components/UnparsedBlockFields";
 import {
   countUnparsed,
@@ -10,10 +14,12 @@ import {
   type ArticleLayout,
   type BlogBlock,
 } from "@/lib/blog-blocks";
-import { importBlogMarkdown, type ImportIssue } from "@/lib/import-blog-markdown";
-
-const ACCEPT = ".md,.markdown,.txt,text/markdown,text/plain";
-const MAX_BYTES = 1_000_000;
+import {
+  BLOG_MARKDOWN_TEMPLATE,
+  BLOG_STRUCTURE_GUIDE,
+  importBlogMarkdown,
+  type ImportIssue,
+} from "@/lib/import-blog-markdown";
 
 function blockSummary(block: BlogBlock): string {
   if (block.type === "heading") return block.text.slice(0, 80) || "Heading";
@@ -26,13 +32,22 @@ function blockSummary(block: BlogBlock): string {
   if (block.type === "drawio") return "Draw.io diagram";
   if (block.type === "divider") return "Section break";
   if (block.type === "split") return "Half / half";
+  if (block.type === "unparsed") return block.reason.slice(0, 80);
   return "Needs a block type";
+}
+
+function downloadTemplate() {
+  const blob = new Blob([BLOG_MARKDOWN_TEMPLATE], { type: "text/markdown;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = "blog-post-template.md";
+  anchor.click();
+  URL.revokeObjectURL(url);
 }
 
 export function BlogImport() {
   const router = useRouter();
-  const fileRef = useRef<HTMLInputElement>(null);
-  const [dragging, setDragging] = useState(false);
   const [filename, setFilename] = useState("");
   const [status, setStatus] = useState("");
   const [busy, setBusy] = useState(false);
@@ -44,12 +59,54 @@ export function BlogImport() {
   const [topics, setTopics] = useState<string[]>([]);
   const [blocks, setBlocks] = useState<BlogBlock[]>([]);
   const [issues, setIssues] = useState<ImportIssue[]>([]);
-  const [paste, setPaste] = useState("");
+  const [source, setSource] = useState("");
+  const [lastParsedSource, setLastParsedSource] = useState("");
+  const [viewTab, setViewTab] = useState<AdminViewTab>("edit");
   const parsed = blocks.length > 0;
   const leftover = countUnparsed(blocks);
+  const previewStale = parsed && source !== lastParsedSource;
 
-  function applySource(source: string, name = "pasted.md") {
+  const previewData = useMemo(() => {
+    if (!source.trim() && !parsed) return null;
+    if (parsed && !previewStale) {
+      return {
+        title,
+        excerpt,
+        topics,
+        heroUrl: heroUrl || null,
+        layout,
+        blocks,
+        slug,
+      };
+    }
+    if (!source.trim()) return null;
     const result = importBlogMarkdown(source);
+    return {
+      title: result.title,
+      excerpt: result.excerpt,
+      topics: result.topics,
+      heroUrl: result.heroUrl || null,
+      layout: result.layout,
+      blocks: result.blocks,
+      slug: result.slug,
+    };
+  }, [
+    parsed,
+    previewStale,
+    source,
+    title,
+    excerpt,
+    topics,
+    heroUrl,
+    layout,
+    blocks,
+    slug,
+  ]);
+
+  function applySource(nextSource: string, name = "pasted.md") {
+    const result = importBlogMarkdown(nextSource);
+    setSource(nextSource);
+    setLastParsedSource(nextSource);
     setFilename(name);
     setTitle(result.title);
     setSlug(result.slug);
@@ -62,35 +119,19 @@ export function BlogImport() {
     const extra = countUnparsed(result.blocks);
     setStatus(
       extra
-        ? `Parsed ${result.blocks.length} blocks. ${extra} leftover snippet${extra === 1 ? "" : "s"} need a type.`
+        ? `Parsed ${result.blocks.length} blocks. ${extra} section${extra === 1 ? "" : "s"} need review — see detailed errors below.`
         : `Parsed ${result.blocks.length} blocks. Ready to save as a draft.`,
     );
   }
 
-  async function readFile(file: File) {
-    if (file.size > MAX_BYTES) {
-      setStatus("File is larger than 1 MB.");
-      return;
-    }
-    const ext = file.name.split(".").pop()?.toLowerCase() ?? "";
-    if (ext && !["md", "markdown", "txt"].includes(ext)) {
-      setStatus("Use a .md, .markdown, or .txt file.");
-      return;
-    }
-    applySource(await file.text(), file.name);
-  }
+  useEffect(() => {
+    const pending = readPendingMarkdownImport();
+    if (pending) applySource(pending.text, pending.name);
+  }, []);
 
-  async function onPick(event: React.ChangeEvent<HTMLInputElement>) {
-    const file = event.target.files?.[0];
-    event.target.value = "";
-    if (file) await readFile(file);
-  }
-
-  async function onDrop(event: React.DragEvent<HTMLElement>) {
-    event.preventDefault();
-    setDragging(false);
-    const file = event.dataTransfer.files?.[0];
-    if (file) await readFile(file);
+  function scrollToBlock(blockId?: string) {
+    if (!blockId) return;
+    document.getElementById(`import-block-${blockId}`)?.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }
 
   async function createDraft() {
@@ -120,56 +161,95 @@ export function BlogImport() {
 
   return (
     <div className="admin-import">
-      <section
-        className={dragging ? "admin-import-drop is-active" : "admin-import-drop"}
-        onDragOver={(event) => {
-          event.preventDefault();
-          setDragging(true);
-        }}
-        onDragLeave={() => setDragging(false)}
-        onDrop={(event) => void onDrop(event)}
-      >
-        <p>Drop a markdown or plain-text file that matches the blog front matter and body.</p>
+      <MarkdownFileDropzone
+        filename={filename}
+        busy={busy}
+        onFile={(text, name) => applySource(text, name)}
+        onError={setStatus}
+      />
+
+      <section className="admin-panel admin-import-guide" aria-label="Markdown template guide">
+        <h2>Structure guide</h2>
         <p className="admin-muted">
-          YAML title, slug, excerpt, topics, layout, and hero are read when present. Headings,
-          quotes, lists, images, Mermaid, and Draw.io fences become story blocks. Anything else
-          is kept as a leftover snippet you can convert.
+          The parser auto-maps these markdown shapes to story blocks. Use the template as a starting
+          point — every section in it should parse cleanly.
         </p>
-        <input
-          ref={fileRef}
-          type="file"
-          hidden
-          accept={ACCEPT}
-          onChange={(event) => void onPick(event)}
-        />
-        <button type="button" className="admin-btn" onClick={() => fileRef.current?.click()}>
-          Choose file
-        </button>
-        {filename ? <p className="admin-muted">{filename}</p> : null}
+        <div className="admin-editor-actions">
+          <button
+            type="button"
+            className="admin-btn-secondary"
+            onClick={() => {
+              setSource(BLOG_MARKDOWN_TEMPLATE);
+              setFilename("blog-post-template.md");
+              setStatus("Template loaded. Parse it or edit placeholders, then parse.");
+            }}
+          >
+            Load template
+          </button>
+          <button type="button" className="admin-btn-secondary" onClick={downloadTemplate}>
+            Download .md
+          </button>
+          <button
+            type="button"
+            className="admin-btn"
+            onClick={() => applySource(BLOG_MARKDOWN_TEMPLATE, "blog-post-template.md")}
+          >
+            Parse template
+          </button>
+        </div>
+        <div className="admin-structure-grid">
+          {BLOG_STRUCTURE_GUIDE.map((row) => (
+            <details key={row.kind} className="admin-structure-card">
+              <summary>{row.label}</summary>
+              <ul className="admin-import-issues">
+                {row.rules.map((rule) => (
+                  <li key={rule} className="admin-muted">
+                    {rule}
+                  </li>
+                ))}
+              </ul>
+              <pre className="admin-template-preview">{row.example}</pre>
+            </details>
+          ))}
+        </div>
       </section>
 
+      <AdminViewTabs active={viewTab} onChange={setViewTab} label="Markdown import view" />
+
+      <AdminTabPanel tab="edit" active={viewTab}>
       <label>
-        Or paste markdown
+        Markdown source
         <textarea
-          rows={8}
-          value={paste}
-          onChange={(event) => setPaste(event.target.value)}
-          placeholder={"---\ntitle: …\nslug: …\nexcerpt: …\ntopics: GenAI, Platform\nlayout: flow\n---\n\nBody…"}
+          rows={12}
+          value={source}
+          onChange={(event) => setSource(event.target.value)}
+          placeholder="Paste front matter and body, or load the template above."
         />
       </label>
-      <button
-        type="button"
-        className="admin-btn-secondary"
-        onClick={() => {
-          if (!paste.trim()) {
-            setStatus("Paste markdown first.");
-            return;
-          }
-          applySource(paste, "pasted.md");
-        }}
-      >
-        Parse pasted markdown
-      </button>
+      <div className="admin-editor-actions">
+        <button
+          type="button"
+          className="admin-btn"
+          onClick={() => {
+            if (!source.trim()) {
+              setStatus("Paste markdown or load the template first.");
+              return;
+            }
+            applySource(source, filename || "pasted.md");
+          }}
+        >
+          Parse markdown
+        </button>
+        {parsed ? (
+          <button
+            type="button"
+            className="admin-btn-secondary"
+            onClick={() => applySource(source, filename || "pasted.md")}
+          >
+            Re-parse source
+          </button>
+        ) : null}
+      </div>
 
       {status ? <p className={leftover ? "admin-warn" : "admin-ok"}>{status}</p> : null}
 
@@ -226,8 +306,20 @@ export function BlogImport() {
               <h2>Parse notes</h2>
               <ul className="admin-import-issues">
                 {issues.map((item) => (
-                  <li key={item.id} className={item.severity === "warn" ? "admin-warn" : "admin-muted"}>
-                    {item.message}
+                  <li
+                    key={item.id}
+                    className={item.severity === "warn" ? "admin-parse-issue admin-warn" : "admin-parse-issue admin-muted"}
+                  >
+                    <p>
+                      {item.line ? `Line ${item.line}: ` : ""}
+                      {item.message}
+                    </p>
+                    {item.hint ? <p className="admin-parse-hint">{item.hint}</p> : null}
+                    {item.blockId ? (
+                      <button type="button" onClick={() => scrollToBlock(item.blockId)}>
+                        Jump to section
+                      </button>
+                    ) : null}
                   </li>
                 ))}
               </ul>
@@ -238,9 +330,9 @@ export function BlogImport() {
             <h2>Story blocks</h2>
             {leftover ? (
               <p className="admin-warn">
-                {leftover} leftover snippet{leftover === 1 ? "" : "s"} still need a block type. You
-                can convert them here or after saving the draft. Publishing is blocked until they
-                are converted.
+                {leftover} section{leftover === 1 ? "" : "s"} could not be auto-mapped. Edit each
+                snippet inline, use Insert example, or convert to a block type. Publishing is blocked
+                until they are resolved.
               </p>
             ) : (
               <p className="admin-ok">Every section mapped to a blog block.</p>
@@ -249,6 +341,7 @@ export function BlogImport() {
               {blocks.map((block) => (
                 <li
                   key={block.id}
+                  id={block.type === "unparsed" ? `import-block-${block.id}` : undefined}
                   className={block.type === "unparsed" ? "admin-block admin-block-unparsed" : "admin-block"}
                 >
                   <div className="admin-block-bar">
@@ -270,13 +363,40 @@ export function BlogImport() {
               ))}
             </ol>
           </section>
-
-          <div className="admin-editor-actions">
-            <button type="button" className="admin-btn" onClick={() => void createDraft()} disabled={busy}>
-              Save as draft
-            </button>
-          </div>
         </>
+      ) : null}
+      </AdminTabPanel>
+
+      <AdminTabPanel tab="preview" active={viewTab}>
+        <section className="admin-preview" aria-label="Blog page preview">
+          <p className="admin-muted">
+            Same layout as the public article page — back link, topic kicker (first topic in front
+            matter), title, dek, and body blocks. URL after publish:{" "}
+            <code>/blog/{previewData?.slug || slug || "your-slug"}</code>
+          </p>
+          {previewData ? (
+            <BlogPagePreview
+              title={previewData.title}
+              excerpt={previewData.excerpt}
+              topics={previewData.topics}
+              heroUrl={previewData.heroUrl}
+              layout={previewData.layout}
+              blocks={previewData.blocks}
+              liveDiagrams
+              stale={previewStale}
+            />
+          ) : (
+            <p className="admin-muted">Load or paste markdown on the Edit tab to preview the article.</p>
+          )}
+        </section>
+      </AdminTabPanel>
+
+      {parsed ? (
+        <div className="admin-editor-actions">
+          <button type="button" className="admin-btn" onClick={() => void createDraft()} disabled={busy}>
+            Save as draft
+          </button>
+        </div>
       ) : null}
     </div>
   );
